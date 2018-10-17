@@ -1,0 +1,157 @@
+2018-10-16 11:50:52,650 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Starting Mutect2.SplitIntervals
+2018-10-16 11:50:53,605 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.SplitIntervals:NA:1]: `set -e
+export GATK_LOCAL_JAR=/root/gatk.jar
+
+mkdir interval-files
+gatk --java-options "-Xmx3000m" SplitIntervals \
+    -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+    -L /cromwell_root/gatk-best-practices/somatic-b37/whole_exome_agilent_1.1_refseq_plus_3_boosters.Homo_sapiens_assembly19.baits.interval_list \
+    -scatter 1 \
+    -O interval-files \
+    
+cp interval-files/*.intervals .`
+2018-10-16 11:50:53,760 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Starting Mutect2.CollectSequencingArtifactMetrics
+2018-10-16 11:50:54,599 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.CollectSequencingArtifactMetrics:NA:1]: `set -e
+export GATK_LOCAL_JAR=/root/gatk.jar
+gatk --java-options "-Xmx6000m" CollectSequencingArtifactMetrics \
+    -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/8aa9752e-3bb2-4be4-8e0e-8e6b7787fa6c/call-GatherBamFiles/NGB0-075-KOD-NEB-18-2.b37.bam -O "gatk" -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta -VALIDATION_STRINGENCY LENIENT`
+2018-10-16 11:51:25,772 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.SplitIntervals:NA:1]: job id: operations/EJHto9bnLBjRg-mRo7W_z84BIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-16 11:51:25,772 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.CollectSequencingArtifactMetrics:NA:1]: job id: operations/EPfso9bnLBifgMXWtKWvxMsBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-16 11:51:54,201 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.SplitIntervals:NA:1]: Status change from - to Running
+2018-10-16 11:51:54,206 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.CollectSequencingArtifactMetrics:NA:1]: Status change from - to Running
+2018-10-16 11:55:49,494 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.CollectSequencingArtifactMetrics:NA:1]: Status change from Running to Success
+2018-10-16 11:57:30,182 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.SplitIntervals:NA:1]: Status change from Running to Success
+2018-10-16 11:57:35,780 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Starting Mutect2.M2
+2018-10-16 11:57:36,614 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.M2:0:1]: `set -e
+
+export GATK_LOCAL_JAR=/root/gatk.jar
+
+# We need to create these files regardless, even if they stay empty
+touch bamout.bam
+echo "" > normal_name.txt
+
+gatk --java-options "-Xmx3000m" GetSampleName -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/8aa9752e-3bb2-4be4-8e0e-8e6b7787fa6c/call-GatherBamFiles/NGB0-075-KOD-NEB-18-2.b37.bam -O tumor_name.txt -encode
+tumor_command_line="-I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/8aa9752e-3bb2-4be4-8e0e-8e6b7787fa6c/call-GatherBamFiles/NGB0-075-KOD-NEB-18-2.b37.bam -tumor `cat tumor_name.txt`"
+
+if [[ -f "" ]]; then
+    gatk --java-options "-Xmx3000m" GetSampleName -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta -I  -O normal_name.txt -encode
+    normal_command_line="-I  -normal `cat normal_name.txt`"
+fi
+
+gatk --java-options "-Xmx3000m" Mutect2 \
+    -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+    $tumor_command_line \
+    $normal_command_line \
+     \
+     \
+    -L /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-M2Pair/M2.Mutect2/b7f6651e-6e35-41f5-8ef0-d90b52c570e1/call-SplitIntervals/glob-6f4bc12a708659d4f5f3eecd1cdffff7/0000-scattered.intervals \
+     \
+    -O "output.vcf" \
+     \
+     \`
+2018-10-16 11:58:05,763 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.M2:0:1]: job id: operations/EL24vNbnLBi_-IPi5YXlmLABIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-16 11:58:37,418 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.M2:0:1]: Status change from - to Running
+2018-10-16 12:05:53,421 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.M2:0:1]: Status change from Running to Success
+2018-10-16 12:06:05,479 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Starting Mutect2.SumSubVcfs
+2018-10-16 12:06:05,599 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.SumSubVcfs:NA:1]: `python -c "print 1.3105E-5"`
+2018-10-16 12:06:30,762 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.SumSubVcfs:NA:1]: job id: operations/EKaY29bnLBiaoIzGlqbY5r0BIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-16 12:07:01,019 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.SumSubVcfs:NA:1]: Status change from - to Running
+2018-10-16 12:09:15,582 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.SumSubVcfs:NA:1]: Status change from Running to Success
+2018-10-16 12:09:18,919 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Starting Mutect2.MergeVCFs
+2018-10-16 12:09:19,597 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.MergeVCFs:NA:1]: `set -e
+export GATK_LOCAL_JAR=/root/gatk.jar
+gatk --java-options "-Xmx2500m" MergeVcfs -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-M2Pair/M2.Mutect2/b7f6651e-6e35-41f5-8ef0-d90b52c570e1/call-M2/shard-0/output.vcf -O NGB0-075-KOD-NEB-18-2.b37-unfiltered.vcf`
+2018-10-16 12:09:50,774 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.MergeVCFs:NA:1]: job id: operations/EP_A59bnLBjVlNnJrP3ugoABIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-16 12:10:23,413 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.MergeVCFs:NA:1]: Status change from - to Running
+2018-10-16 12:14:51,510 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.MergeVCFs:NA:1]: Status change from Running to Success
+2018-10-16 12:14:57,590 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Starting Mutect2.Filter
+2018-10-16 12:14:58,603 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.Filter:NA:1]: `set -e
+
+export GATK_LOCAL_JAR=/root/gatk.jar
+
+gatk --java-options "-Xmx6500m" FilterMutectCalls -V /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-M2Pair/M2.Mutect2/b7f6651e-6e35-41f5-8ef0-d90b52c570e1/call-MergeVCFs/NGB0-075-KOD-NEB-18-2.b37-unfiltered.vcf \
+   -O NGB0-075-KOD-NEB-18-2.b37-filtered.vcf \
+    \
+    \`
+2018-10-16 12:15:25,774 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.Filter:NA:1]: job id: operations/ENCC_NbnLBj8w_nRz-_wnnEgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-16 12:15:59,403 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.Filter:NA:1]: Status change from - to Running
+2018-10-16 12:21:00,840 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.Filter:NA:1]: Status change from Running to Success
+2018-10-16 12:21:12,650 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Starting Mutect2.FilterByOrientationBias
+2018-10-16 12:21:13,602 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.FilterByOrientationBias:NA:1]: `set -e
+
+export GATK_LOCAL_JAR=/root/gatk.jar
+
+gatk --java-options "-Xmx6500m" FilterByOrientationBias \
+    -V /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-M2Pair/M2.Mutect2/b7f6651e-6e35-41f5-8ef0-d90b52c570e1/call-Filter/NGB0-075-KOD-NEB-18-2.b37-filtered.vcf \
+    -AM G/T -AM C/T \
+    -P /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-M2Pair/M2.Mutect2/b7f6651e-6e35-41f5-8ef0-d90b52c570e1/call-CollectSequencingArtifactMetrics/gatk.pre_adapter_detail_metrics \
+    -O NGB0-075-KOD-NEB-18-2.b37-filtered.vcf`
+2018-10-16 12:21:35,778 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.FilterByOrientationBias:NA:1]: job id: operations/EJLEktfnLBjwhZej8sHDjjkgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-16 12:22:08,675 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.FilterByOrientationBias:NA:1]: Status change from - to Running
+2018-10-16 12:26:36,997 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.FilterByOrientationBias:NA:1]: Status change from Running to Success
+2018-10-16 12:26:42,580 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Starting Mutect2.oncotate_m2
+2018-10-16 12:26:45,584 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.oncotate_m2:NA:1]: `# fail if *any* command below (not just the last) doesn't return 0, in particular if wget fails
+set -e
+echo true
+
+# local db dir is a directory and has been specified
+if [[ -d "" ]]; then
+    echo "Using local db-dir: "
+    echo "THIS ONLY WORKS WITHOUT DOCKER!"
+    ln -s  onco_dbdir
+elif [[ "/cromwell_root/gatk-best-practices/somatic-b37/oncotator_v1_ds_April052016.tar.gz" == *.tar.gz ]]; then
+    echo "Using given tar file: /cromwell_root/gatk-best-practices/somatic-b37/oncotator_v1_ds_April052016.tar.gz"
+    mkdir onco_dbdir
+    tar zxvf /cromwell_root/gatk-best-practices/somatic-b37/oncotator_v1_ds_April052016.tar.gz -C onco_dbdir --strip-components 1
+else
+    echo "Downloading and installing oncotator datasources from Broad FTP site..."
+    # Download and untar the db-dir
+    wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/oncotator/oncotator_v1_ds_April052016.tar.gz
+    tar zxvf oncotator_v1_ds_April052016.tar.gz
+    ln -s oncotator_v1_ds_April052016 onco_dbdir
+fi
+
+/root/oncotator_venv/bin/oncotator --db-dir onco_dbdir/ -c $HOME/tx_exact_uniprot_matches.AKT1_CRLF2_FGFR1.txt  \
+    -v /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-M2Pair/M2.Mutect2/b7f6651e-6e35-41f5-8ef0-d90b52c570e1/call-FilterByOrientationBias/NGB0-075-KOD-NEB-18-2.b37-filtered.vcf NGB0-075-KOD-NEB-18-2.maf.annotated hg19 -i VCF -o TCGAMAF --skip-no-alt --collapse-number-annotations --log_name oncotator.log \
+    -a Center:BI \
+    -a source:Unknown \
+    -a normal_barcode: \
+    -a tumor_barcode:NGB0-075-KOD-NEB-18-2 \
+     \
+     --collapse-filter-cols --prune-filter-cols  \`
+2018-10-16 12:27:15,772 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.oncotate_m2:NA:1]: job id: operations/EJCJp9fnLBjfpJWpudqS_JIBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-16 12:27:44,564 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.oncotate_m2:NA:1]: Status change from - to Running
+2018-10-16 13:33:27,545 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.oncotate_m2:NA:1]: Status change from Running to Preempted
+2018-10-16 13:33:31,768 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Retrying job execution for Mutect2.oncotate_m2:NA:2
+2018-10-16 13:33:32,300 INFO  - b7f6651e-6e35-41f5-8ef0-d90b52c570e1-SubWorkflowActor-SubWorkflow-M2Pair:-1:1 [UUID(b7f6651e)]: Starting Mutect2.oncotate_m2
+2018-10-16 13:33:32,610 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.oncotate_m2:NA:2]: `# fail if *any* command below (not just the last) doesn't return 0, in particular if wget fails
+set -e
+echo true
+
+# local db dir is a directory and has been specified
+if [[ -d "" ]]; then
+    echo "Using local db-dir: "
+    echo "THIS ONLY WORKS WITHOUT DOCKER!"
+    ln -s  onco_dbdir
+elif [[ "/cromwell_root/gatk-best-practices/somatic-b37/oncotator_v1_ds_April052016.tar.gz" == *.tar.gz ]]; then
+    echo "Using given tar file: /cromwell_root/gatk-best-practices/somatic-b37/oncotator_v1_ds_April052016.tar.gz"
+    mkdir onco_dbdir
+    tar zxvf /cromwell_root/gatk-best-practices/somatic-b37/oncotator_v1_ds_April052016.tar.gz -C onco_dbdir --strip-components 1
+else
+    echo "Downloading and installing oncotator datasources from Broad FTP site..."
+    # Download and untar the db-dir
+    wget ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/oncotator/oncotator_v1_ds_April052016.tar.gz
+    tar zxvf oncotator_v1_ds_April052016.tar.gz
+    ln -s oncotator_v1_ds_April052016 onco_dbdir
+fi
+
+/root/oncotator_venv/bin/oncotator --db-dir onco_dbdir/ -c $HOME/tx_exact_uniprot_matches.AKT1_CRLF2_FGFR1.txt  \
+    -v /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/e683145c-0e43-4b36-872e-b5551c4cb160/call-M2Pair/M2.Mutect2/b7f6651e-6e35-41f5-8ef0-d90b52c570e1/call-FilterByOrientationBias/NGB0-075-KOD-NEB-18-2.b37-filtered.vcf NGB0-075-KOD-NEB-18-2.maf.annotated hg19 -i VCF -o TCGAMAF --skip-no-alt --collapse-number-annotations --log_name oncotator.log \
+    -a Center:BI \
+    -a source:Unknown \
+    -a normal_barcode: \
+    -a tumor_barcode:NGB0-075-KOD-NEB-18-2 \
+     \
+     --collapse-filter-cols --prune-filter-cols  \`
+2018-10-16 13:34:05,774 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.oncotate_m2:NA:2]: job id: operations/EMftm9nnLBifzau84aOck24gyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-16 13:34:34,922 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(b7f6651e)Mutect2.oncotate_m2:NA:2]: Status change from - to Running

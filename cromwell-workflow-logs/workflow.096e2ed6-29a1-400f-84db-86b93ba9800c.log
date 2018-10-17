@@ -1,0 +1,901 @@
+2018-10-11 17:31:21,113 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV, PreProcessingForVariantDiscovery_GATK4.GetBwaVersion
+2018-10-11 17:31:23,717 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV:NA:1]: `python <<CODE
+with open("/cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.dict", "r") as ref_dict_file:
+    sequence_tuple_list = []
+    longest_sequence = 0
+    for line in ref_dict_file:
+        if line.startswith("@SQ"):
+            line_split = line.split("\t")
+            # (Sequence_Name, Sequence_Length)
+            sequence_tuple_list.append((line_split[1].split("SN:")[1], int(line_split[2].split("LN:")[1])))
+    longest_sequence = sorted(sequence_tuple_list, key=lambda x: x[1], reverse=True)[0][1]
+# We are adding this to the intervals because hg38 has contigs named with embedded colons (:) and a bug in 
+# some versions of GATK strips off the last element after a colon, so we add this as a sacrificial element.
+hg38_protection_tag = ":1+"
+# initialize the tsv string with the first sequence
+tsv_string = sequence_tuple_list[0][0] + hg38_protection_tag
+temp_size = sequence_tuple_list[0][1]
+for sequence_tuple in sequence_tuple_list[1:]:
+    if temp_size + sequence_tuple[1] <= longest_sequence:
+        temp_size += sequence_tuple[1]
+        tsv_string += "\t" + sequence_tuple[0] + hg38_protection_tag
+    else:
+        tsv_string += "\n" + sequence_tuple[0] + hg38_protection_tag
+        temp_size = sequence_tuple[1]
+# add the unmapped sequences as a separate line to ensure that they are recalibrated as well
+with open("sequence_grouping.txt","w") as tsv_file:
+  tsv_file.write(tsv_string)
+  tsv_file.close()
+
+tsv_string += '\n' + "unmapped"
+
+with open("sequence_grouping_with_unmapped.txt","w") as tsv_file_with_unmapped:
+  tsv_file_with_unmapped.write(tsv_string)
+  tsv_file_with_unmapped.close()
+CODE`
+2018-10-11 17:31:23,717 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:1]: `# Not setting "set -o pipefail" here because /bwa has a rc=1 and we don't want to allow rc=1 to succeed 
+# because the sed may also fail with that error and that is something we actually want to fail on.
+/usr/gitc/bwa 2>&1 | \
+grep -e '^Version' | \
+sed 's/Version: //'`
+2018-10-11 17:31:25,222 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem
+2018-10-11 17:31:25,817 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem:0:1]: `  set -o pipefail
+  set -e
+
+  # set the bash variable needed for the command-line
+  bash_ref_fasta=/cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta
+
+java -Dsamjdk.compression_level=5 -Xms3000m -jar /usr/gitc/picard.jar \
+    SamToFastq \
+	INPUT=/cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessFastqs/PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf/cace944c-4790-47a8-90db-347d84f3f001/call-PairedFastQsToUnmappedBAM/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.bam \
+	FASTQ=/dev/stdout \
+	INTERLEAVE=true \
+	NON_PF=true \
+  | \
+/usr/gitc/bwa mem -K 100000000 -p -v 3 -t 16 -Y $bash_ref_fasta /dev/stdin -  2> >(tee NGB0-075-KOD-NEB-18-2.unmapped.unmerged.bwa.stderr.log >&2) \
+  | \
+samtools view -1 - > NGB0-075-KOD-NEB-18-2.unmapped.unmerged.bam`
+2018-10-11 17:31:50,763 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem:0:1]: job id: operations/EKS6g5LmLBjXpoWEwo-TyawBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 17:31:50,763 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV:NA:1]: job id: operations/EITIg5LmLBjlwo68vdPMvdQBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 17:31:50,765 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:1]: job id: operations/EKS6g5LmLBjsmrqtpbi-jysgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 17:32:21,866 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV:NA:1]: Status change from - to Running
+2018-10-11 17:32:21,874 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem:0:1]: Status change from - to Running
+2018-10-11 17:32:21,878 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:1]: Status change from - to Running
+2018-10-11 17:34:03,386 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV:NA:1]: Status change from Running to Success
+2018-10-11 17:35:44,746 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:1]: Status change from Running to Success
+2018-10-11 17:36:18,796 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem:0:1]: Status change from Running to Success
+2018-10-11 17:36:21,566 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment
+2018-10-11 17:36:23,798 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:1]: `# set the bash variable needed for the command-line
+bash_ref_fasta=/cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta
+/gatk/gatk --java-options "-Dsamjdk.compression_level=5 -Xms3000m" \
+  MergeBamAlignment \
+  --VALIDATION_STRINGENCY SILENT \
+  --EXPECTED_ORIENTATIONS FR \
+  --ATTRIBUTES_TO_RETAIN X0 \
+  --ALIGNED_BAM /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SamToFastqAndBwaMem/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.unmerged.bam \
+  --UNMAPPED_BAM /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessFastqs/PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf/cace944c-4790-47a8-90db-347d84f3f001/call-PairedFastQsToUnmappedBAM/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.bam \
+  --OUTPUT NGB0-075-KOD-NEB-18-2.unmapped.aligned.unsorted.bam \
+  --REFERENCE_SEQUENCE /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  --PAIRED_RUN true \
+  --SORT_ORDER "unsorted" \
+  --IS_BISULFITE_SEQUENCE false \
+  --ALIGNED_READS_ONLY false \
+  --CLIP_ADAPTERS false \
+  --MAX_RECORDS_IN_RAM 2000000 \
+  --ADD_MATE_CIGAR true \
+  --MAX_INSERTIONS_OR_DELETIONS -1 \
+  --PRIMARY_ALIGNMENT_STRATEGY MostDistant \
+  --PROGRAM_RECORD_ID "bwamem" \
+  --PROGRAM_GROUP_VERSION "0.7.15-r1140" \
+  --PROGRAM_GROUP_COMMAND_LINE "bwa mem -K 100000000 -p -v 3 -t 16 -Y $bash_ref_fasta" \
+  --PROGRAM_GROUP_NAME "bwamem" \
+  --UNMAPPED_READ_STRATEGY COPY_TO_TAG \
+  --ALIGNER_PROPER_PAIR_FLAGS true \
+  --UNMAP_CONTAMINANT_READS true`
+2018-10-11 17:36:55,755 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:1]: job id: operations/ELiClpLmLBiujMKxw4-_zMkBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 17:37:26,026 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:1]: Status change from - to Running
+2018-10-11 18:48:43,208 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:1]: Status change from Running to Preempted
+2018-10-11 18:48:45,781 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:2
+2018-10-11 18:48:46,605 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment
+2018-10-11 18:48:46,819 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:2]: `# set the bash variable needed for the command-line
+bash_ref_fasta=/cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta
+/gatk/gatk --java-options "-Dsamjdk.compression_level=5 -Xms3000m" \
+  MergeBamAlignment \
+  --VALIDATION_STRINGENCY SILENT \
+  --EXPECTED_ORIENTATIONS FR \
+  --ATTRIBUTES_TO_RETAIN X0 \
+  --ALIGNED_BAM /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SamToFastqAndBwaMem/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.unmerged.bam \
+  --UNMAPPED_BAM /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessFastqs/PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf/cace944c-4790-47a8-90db-347d84f3f001/call-PairedFastQsToUnmappedBAM/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.bam \
+  --OUTPUT NGB0-075-KOD-NEB-18-2.unmapped.aligned.unsorted.bam \
+  --REFERENCE_SEQUENCE /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  --PAIRED_RUN true \
+  --SORT_ORDER "unsorted" \
+  --IS_BISULFITE_SEQUENCE false \
+  --ALIGNED_READS_ONLY false \
+  --CLIP_ADAPTERS false \
+  --MAX_RECORDS_IN_RAM 2000000 \
+  --ADD_MATE_CIGAR true \
+  --MAX_INSERTIONS_OR_DELETIONS -1 \
+  --PRIMARY_ALIGNMENT_STRATEGY MostDistant \
+  --PROGRAM_RECORD_ID "bwamem" \
+  --PROGRAM_GROUP_VERSION "0.7.15-r1140" \
+  --PROGRAM_GROUP_COMMAND_LINE "bwa mem -K 100000000 -p -v 3 -t 16 -Y $bash_ref_fasta" \
+  --PROGRAM_GROUP_NAME "bwamem" \
+  --UNMAPPED_READ_STRATEGY COPY_TO_TAG \
+  --ALIGNER_PROPER_PAIR_FLAGS true \
+  --UNMAP_CONTAMINANT_READS true`
+2018-10-11 18:49:20,755 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:2]: job id: operations/EKyUn5TmLBiWvLqI-Jy0vtABIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 18:49:50,538 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:2]: Status change from - to Running
+2018-10-11 18:54:52,806 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:2]: Status change from Running to Preempted
+2018-10-11 18:54:55,762 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:3
+2018-10-11 18:54:56,765 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment
+2018-10-11 18:54:56,826 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:3]: `# set the bash variable needed for the command-line
+bash_ref_fasta=/cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta
+/gatk/gatk --java-options "-Dsamjdk.compression_level=5 -Xms3000m" \
+  MergeBamAlignment \
+  --VALIDATION_STRINGENCY SILENT \
+  --EXPECTED_ORIENTATIONS FR \
+  --ATTRIBUTES_TO_RETAIN X0 \
+  --ALIGNED_BAM /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SamToFastqAndBwaMem/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.unmerged.bam \
+  --UNMAPPED_BAM /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessFastqs/PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf/cace944c-4790-47a8-90db-347d84f3f001/call-PairedFastQsToUnmappedBAM/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.bam \
+  --OUTPUT NGB0-075-KOD-NEB-18-2.unmapped.aligned.unsorted.bam \
+  --REFERENCE_SEQUENCE /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  --PAIRED_RUN true \
+  --SORT_ORDER "unsorted" \
+  --IS_BISULFITE_SEQUENCE false \
+  --ALIGNED_READS_ONLY false \
+  --CLIP_ADAPTERS false \
+  --MAX_RECORDS_IN_RAM 2000000 \
+  --ADD_MATE_CIGAR true \
+  --MAX_INSERTIONS_OR_DELETIONS -1 \
+  --PRIMARY_ALIGNMENT_STRATEGY MostDistant \
+  --PROGRAM_RECORD_ID "bwamem" \
+  --PROGRAM_GROUP_VERSION "0.7.15-r1140" \
+  --PROGRAM_GROUP_COMMAND_LINE "bwa mem -K 100000000 -p -v 3 -t 16 -Y $bash_ref_fasta" \
+  --PROGRAM_GROUP_NAME "bwamem" \
+  --UNMAPPED_READ_STRATEGY COPY_TO_TAG \
+  --ALIGNER_PROPER_PAIR_FLAGS true \
+  --UNMAP_CONTAMINANT_READS true`
+2018-10-11 18:55:30,754 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:3]: job id: operations/EMbdtZTmLBi-wMWmzZbMnKYBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 18:56:00,238 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:3]: Status change from - to Running
+2018-10-11 19:02:09,372 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:3]: Status change from Running to Success
+2018-10-11 19:02:13,113 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.MarkDuplicates
+2018-10-11 19:02:13,815 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MarkDuplicates:NA:1]: `/gatk/gatk --java-options "-Dsamjdk.compression_level=5 -Xms4000m" \
+  MarkDuplicates \
+  --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-MergeBamAlignment/shard-0/attempt-3/NGB0-075-KOD-NEB-18-2.unmapped.aligned.unsorted.bam \
+  --OUTPUT NGB0-075-KOD-NEB-18-2.b37.aligned.unsorted.duplicates_marked.bam \
+  --METRICS_FILE NGB0-075-KOD-NEB-18-2.b37.duplicate_metrics \
+  --VALIDATION_STRINGENCY SILENT \
+  --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
+  --ASSUME_SORT_ORDER "queryname" \
+  --CREATE_MD5_FILE true`
+2018-10-11 19:02:45,745 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MarkDuplicates:NA:1]: job id: operations/EKmu0JTmLBj_hOutu-6BvGogyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:03:17,561 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MarkDuplicates:NA:1]: Status change from - to Running
+2018-10-11 19:07:12,224 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.MarkDuplicates:NA:1]: Status change from Running to Success
+2018-10-11 19:07:14,885 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.SortAndFixTags
+2018-10-11 19:07:15,820 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.SortAndFixTags:NA:1]: `set -o pipefail
+
+/gatk/gatk --java-options "-Dsamjdk.compression_level=5 -Xms4000m" \
+  SortSam \
+  --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-MarkDuplicates/NGB0-075-KOD-NEB-18-2.b37.aligned.unsorted.duplicates_marked.bam \
+  --OUTPUT /dev/stdout \
+  --SORT_ORDER "coordinate" \
+  --CREATE_INDEX false \
+  --CREATE_MD5_FILE false \
+| \
+/gatk/gatk --java-options "-Dsamjdk.compression_level=5 -Xms500m" \
+  SetNmAndUqTags \
+  --INPUT /dev/stdin \
+  --OUTPUT NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --CREATE_INDEX true \
+  --CREATE_MD5_FILE true \
+  --REFERENCE_SEQUENCE /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta`
+2018-10-11 19:07:45,754 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.SortAndFixTags:NA:1]: job id: operations/EJnr4pTmLBjJmpGU2cWL3CkgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:08:20,113 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.SortAndFixTags:NA:1]: Status change from - to Running
+2018-10-11 19:13:21,746 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.SortAndFixTags:NA:1]: Status change from Running to Success
+2018-10-11 19:13:24,065 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator (17 shards)
+2018-10-11 19:13:24,850 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:3:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 4:1+`
+2018-10-11 19:13:24,858 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:0:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 1:1+`
+2018-10-11 19:13:24,859 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:9:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 10:1+`
+2018-10-11 19:13:24,860 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:6:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 7:1+`
+2018-10-11 19:13:24,874 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:12:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 14:1+ -L 15:1+`
+2018-10-11 19:13:24,887 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:4:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 5:1+`
+2018-10-11 19:13:24,895 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:5:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 6:1+`
+2018-10-11 19:13:24,900 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:2:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 3:1+`
+2018-10-11 19:13:24,906 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:8:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 9:1+`
+2018-10-11 19:13:24,906 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:13:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 16:1+ -L 17:1+`
+2018-10-11 19:13:24,913 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:7:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 8:1+`
+2018-10-11 19:13:24,920 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:14:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 18:1+ -L 19:1+ -L 20:1+ -L 21:1+`
+2018-10-11 19:13:24,922 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:11:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 12:1+ -L 13:1+`
+2018-10-11 19:13:24,923 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:15:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 22:1+ -L X:1+`
+2018-10-11 19:13:24,924 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:16:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L Y:1+ -L MT:1+ -L GL000207.1:1+ -L GL000226.1:1+ -L GL000229.1:1+ -L GL000231.1:1+ -L GL000210.1:1+ -L GL000239.1:1+ -L GL000235.1:1+ -L GL000201.1:1+ -L GL000247.1:1+ -L GL000245.1:1+ -L GL000197.1:1+ -L GL000203.1:1+ -L GL000246.1:1+ -L GL000249.1:1+ -L GL000196.1:1+ -L GL000248.1:1+ -L GL000244.1:1+ -L GL000238.1:1+ -L GL000202.1:1+ -L GL000234.1:1+ -L GL000232.1:1+ -L GL000206.1:1+ -L GL000240.1:1+ -L GL000236.1:1+ -L GL000241.1:1+ -L GL000243.1:1+ -L GL000242.1:1+ -L GL000230.1:1+ -L GL000237.1:1+ -L GL000233.1:1+ -L GL000204.1:1+ -L GL000198.1:1+ -L GL000208.1:1+ -L GL000191.1:1+ -L GL000227.1:1+ -L GL000228.1:1+ -L GL000214.1:1+ -L GL000221.1:1+ -L GL000209.1:1+ -L GL000218.1:1+ -L GL000220.1:1+ -L GL000213.1:1+ -L GL000211.1:1+ -L GL000199.1:1+ -L GL000217.1:1+ -L GL000216.1:1+ -L GL000215.1:1+ -L GL000205.1:1+ -L GL000219.1:1+ -L GL000224.1:1+ -L GL000223.1:1+ -L GL000195.1:1+ -L GL000212.1:1+ -L GL000222.1:1+ -L GL000200.1:1+ -L GL000193.1:1+ -L GL000194.1:1+ -L GL000225.1:1+ -L GL000192.1:1+ -L NC_007605:1+ -L hs37d5:1+`
+2018-10-11 19:13:24,924 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:10:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 11:1+`
+2018-10-11 19:13:24,927 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:1:1]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 2:1+`
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:6:1]: job id: operations/EPW8-ZTmLBjl4dzv2My60OgBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:9:1]: job id: operations/EOu8-ZTmLBiouOjOkO_FzswBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:8:1]: job id: operations/EOS8-ZTmLBitxOmztpSeuLIBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:4:1]: job id: operations/EN-8-ZTmLBjI5oPS2oi57X0gyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:0:1]: job id: operations/EOK8-ZTmLBiRk5OawveG7WsgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:2:1]: job id: operations/EOC8-ZTmLBiOuM7ju5O7w8YBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:12:1]: job id: operations/EPu8-ZTmLBjx87fhnZ_cowUgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:14:1]: job id: operations/EIW--ZTmLBi4596znpLA2ZABIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:3:1]: job id: operations/EOG8-ZTmLBiz3rXvg6K68foBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:1:1]: job id: operations/EN-8-ZTmLBic4pGe4pKGpmEgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:00,769 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:15:1]: job id: operations/EOO8-ZTmLBiClcawiP-_xAMgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:00,769 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:11:1]: job id: operations/EJu9-ZTmLBi8pJaznMWo9vkBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:14:00,769 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:10:1]: job id: operations/EKO9-ZTmLBjGn6eWt_CthBEgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:00,769 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:16:1]: job id: operations/EOC8-ZTmLBj8rt-czcf3oSwgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:00,770 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:13:1]: job id: operations/EOC8-ZTmLBiM-7nql_K-jwQgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:00,772 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:5:1]: job id: operations/EOW8-ZTmLBjll97t4Y_OkxMgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:00,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:7:1]: job id: operations/ENu8-ZTmLBiC-ab50rmW818gyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:14:29,496 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:0:1]: Status change from - to Initializing
+2018-10-11 19:14:29,507 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:11:1]: Status change from - to Running
+2018-10-11 19:14:29,514 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:1:1]: Status change from - to Initializing
+2018-10-11 19:14:29,521 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:3:1]: Status change from - to Preempted
+2018-10-11 19:14:29,528 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:4:1]: Status change from - to Running
+2018-10-11 19:14:29,534 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:13:1]: Status change from - to Preempted
+2018-10-11 19:14:29,540 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:10:1]: Status change from - to Running
+2018-10-11 19:14:29,545 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:16:1]: Status change from - to Initializing
+2018-10-11 19:14:29,551 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:14:1]: Status change from - to Preempted
+2018-10-11 19:14:29,556 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:7:1]: Status change from - to Running
+2018-10-11 19:14:29,561 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:8:1]: Status change from - to Preempted
+2018-10-11 19:14:29,567 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:2:1]: Status change from - to Initializing
+2018-10-11 19:14:29,571 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:9:1]: Status change from - to Running
+2018-10-11 19:14:29,575 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:15:1]: Status change from - to Running
+2018-10-11 19:14:29,580 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:12:1]: Status change from - to Running
+2018-10-11 19:14:29,585 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:6:1]: Status change from - to Preempted
+2018-10-11 19:14:29,591 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:5:1]: Status change from - to Preempted
+2018-10-11 19:14:30,769 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:6:2
+2018-10-11 19:14:30,772 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:13:2
+2018-10-11 19:14:30,781 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:14:2
+2018-10-11 19:14:30,783 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:8:2
+2018-10-11 19:14:30,784 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:3:2
+2018-10-11 19:14:30,786 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:5:2
+2018-10-11 19:14:31,034 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator (6 shards)
+2018-10-11 19:14:31,837 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:3:2]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 4:1+`
+2018-10-11 19:14:31,847 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:6:2]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 7:1+`
+2018-10-11 19:14:31,847 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:8:2]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 9:1+`
+2018-10-11 19:14:31,850 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:5:2]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 6:1+`
+2018-10-11 19:14:31,860 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:13:2]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 16:1+ -L 17:1+`
+2018-10-11 19:14:31,861 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:14:2]: `
+/gatk/gatk --java-options "-Xms4000m" \
+  BaseRecalibrator \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  --use-original-qualities \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/dbsnp_138.b37.vcf \
+  --known-sites /cromwell_root/gatk-legacy-bundles/b37/Mills_and_1000G_gold_standard.indels.b37.vcf \
+  -L 18:1+ -L 19:1+ -L 20:1+ -L 21:1+`
+2018-10-11 19:15:05,760 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:14:2]: job id: operations/EKHG_ZTmLBiDs8rurqjKqqYBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:15:05,760 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:8:2]: job id: operations/EJfG_ZTmLBjnlv-Ajf2X9gEgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:15:05,760 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:5:2]: job id: operations/EJfG_ZTmLBi3iKi-gvSokewBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:15:05,760 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:3:2]: job id: operations/EI_G_ZTmLBjFtcfWsZ-k-tgBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:15:05,760 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:13:2]: job id: operations/EI7G_ZTmLBiZ2-mpud7W8CIgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:15:05,760 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:6:2]: job id: operations/EJbG_ZTmLBjSj6Ca1J6x_q0BIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:15:38,448 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:5:2]: Status change from - to Initializing
+2018-10-11 19:15:38,453 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:14:2]: Status change from - to Initializing
+2018-10-11 19:15:38,459 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:3:2]: Status change from - to Initializing
+2018-10-11 19:15:38,464 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:13:2]: Status change from - to Initializing
+2018-10-11 19:15:38,470 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:6:2]: Status change from - to Initializing
+2018-10-11 19:15:38,475 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:8:2]: Status change from - to Initializing
+2018-10-11 19:20:43,465 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:1:1]: Status change from Initializing to Running
+2018-10-11 19:20:43,474 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:9:1]: Status change from Running to Success
+2018-10-11 19:21:16,868 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:12:1]: Status change from Running to Success
+2018-10-11 19:21:16,879 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:10:1]: Status change from Running to Success
+2018-10-11 19:22:24,737 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:15:1]: Status change from Running to Success
+2018-10-11 19:22:25,622 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:11:1]: Status change from Running to Success
+2018-10-11 19:22:58,232 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:6:2]: Status change from Initializing to Running
+2018-10-11 19:24:06,450 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:4:1]: Status change from Running to Success
+2018-10-11 19:24:06,474 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:8:2]: Status change from Initializing to Running
+2018-10-11 19:25:13,592 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:0:1]: Status change from Initializing to Running
+2018-10-11 19:25:13,596 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:5:2]: Status change from Initializing to Running
+2018-10-11 19:25:47,322 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:14:2]: Status change from Initializing to Running
+2018-10-11 19:25:47,340 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:3:2]: Status change from Initializing to Running
+2018-10-11 19:26:21,074 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:7:1]: Status change from Running to Success
+2018-10-11 19:26:55,299 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:2:1]: Status change from Initializing to Running
+2018-10-11 19:29:09,993 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:1:1]: Status change from Running to Success
+2018-10-11 19:29:43,568 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:6:2]: Status change from Running to Success
+2018-10-11 19:30:51,256 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:0:1]: Status change from Running to Success
+2018-10-11 19:31:24,814 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:16:1]: Status change from Initializing to Running
+2018-10-11 19:31:24,823 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:14:2]: Status change from Running to Success
+2018-10-11 19:31:24,832 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:8:2]: Status change from Running to Success
+2018-10-11 19:32:32,239 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:2:1]: Status change from Running to Success
+2018-10-11 19:33:05,899 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:5:2]: Status change from Running to Success
+2018-10-11 19:33:05,909 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:3:2]: Status change from Running to Success
+2018-10-11 19:34:12,711 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:13:2]: Status change from Initializing to Running
+2018-10-11 19:35:20,117 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:16:1]: Status change from Running to Success
+2018-10-11 19:41:27,554 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.BaseRecalibrator:13:2]: Status change from Running to Success
+2018-10-11 19:41:30,724 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.GatherBqsrReports
+2018-10-11 19:41:30,827 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBqsrReports:NA:1]: `/gatk/gatk --java-options "-Xms3000m" \
+  GatherBQSRReports \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-0/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-1/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-2/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-3/attempt-2/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-4/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-5/attempt-2/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-6/attempt-2/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-7/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-8/attempt-2/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-9/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-10/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-11/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-12/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-13/attempt-2/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-14/attempt-2/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-15/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-BaseRecalibrator/shard-16/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  -O NGB0-075-KOD-NEB-18-2.b37.recal_data.csv`
+2018-10-11 19:42:05,754 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBqsrReports:NA:1]: job id: operations/ELSq4JXmLBj9t-mp8qXCprkBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:42:35,300 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBqsrReports:NA:1]: Status change from - to Running
+2018-10-11 19:48:44,436 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBqsrReports:NA:1]: Status change from Running to Success
+2018-10-11 19:48:47,155 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.ApplyBQSR (18 shards)
+2018-10-11 19:48:47,831 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:5:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 6:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,837 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:9:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 10:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,842 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:16:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L Y:1+ -L MT:1+ -L GL000207.1:1+ -L GL000226.1:1+ -L GL000229.1:1+ -L GL000231.1:1+ -L GL000210.1:1+ -L GL000239.1:1+ -L GL000235.1:1+ -L GL000201.1:1+ -L GL000247.1:1+ -L GL000245.1:1+ -L GL000197.1:1+ -L GL000203.1:1+ -L GL000246.1:1+ -L GL000249.1:1+ -L GL000196.1:1+ -L GL000248.1:1+ -L GL000244.1:1+ -L GL000238.1:1+ -L GL000202.1:1+ -L GL000234.1:1+ -L GL000232.1:1+ -L GL000206.1:1+ -L GL000240.1:1+ -L GL000236.1:1+ -L GL000241.1:1+ -L GL000243.1:1+ -L GL000242.1:1+ -L GL000230.1:1+ -L GL000237.1:1+ -L GL000233.1:1+ -L GL000204.1:1+ -L GL000198.1:1+ -L GL000208.1:1+ -L GL000191.1:1+ -L GL000227.1:1+ -L GL000228.1:1+ -L GL000214.1:1+ -L GL000221.1:1+ -L GL000209.1:1+ -L GL000218.1:1+ -L GL000220.1:1+ -L GL000213.1:1+ -L GL000211.1:1+ -L GL000199.1:1+ -L GL000217.1:1+ -L GL000216.1:1+ -L GL000215.1:1+ -L GL000205.1:1+ -L GL000219.1:1+ -L GL000224.1:1+ -L GL000223.1:1+ -L GL000195.1:1+ -L GL000212.1:1+ -L GL000222.1:1+ -L GL000200.1:1+ -L GL000193.1:1+ -L GL000194.1:1+ -L GL000225.1:1+ -L GL000192.1:1+ -L NC_007605:1+ -L hs37d5:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,858 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:11:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 12:1+ -L 13:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,859 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 2:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,870 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:10:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 11:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,874 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:0:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 1:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,875 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:14:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 18:1+ -L 19:1+ -L 20:1+ -L 21:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,876 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:6:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 7:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,878 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:12:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 14:1+ -L 15:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,887 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:15:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 22:1+ -L X:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,889 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:8:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 9:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,890 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:4:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 5:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,890 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:2:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 3:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,899 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:17:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L unmapped \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,900 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:7:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 8:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,900 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:3:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 4:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:48:47,912 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:13:1]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 16:1+ -L 17:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:49:20,767 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:10:1]: job id: operations/EID--pXmLBjgktP3i_n4j9IBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,767 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:11:1]: job id: operations/EO79-pXmLBjZv-Oyzt-HylkgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:49:20,767 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:1]: job id: operations/EPv9-pXmLBi5tLXzxIKLiLIBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:2:1]: job id: operations/EPb9-pXmLBjm8JH-5umsvaUBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:4:1]: job id: operations/EID--pXmLBiQrbr0ocvR0kcgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:49:20,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:17:1]: job id: operations/EPL9-pXmLBiEu9fFs6CR_NkBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:3:1]: job id: operations/EPT9-pXmLBj6sqLOh6TNxK4BIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:16:1]: job id: operations/EP79-pXmLBjmvKWCleqb2k0gyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:49:20,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:13:1]: job id: operations/EO39-pXmLBjk3Jv5le-1yzggyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:49:20,767 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:9:1]: job id: operations/EID--pXmLBisoZrdhPni2O4BIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,767 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:0:1]: job id: operations/EP_9-pXmLBj1s87KrtGk73IgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:49:20,767 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:12:1]: job id: operations/EOv9-pXmLBjs6JyK4YzAt_cBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,767 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:5:1]: job id: operations/EPD9-pXmLBiwlPPnus7F4UMgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:49:20,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:8:1]: job id: operations/EKD--pXmLBjBk_-vmtPKjqoBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:6:1]: job id: operations/EPT9-pXmLBi71Pqen7emxYUBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,768 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:7:1]: job id: operations/EIH--pXmLBj33Ymb7buN8GwgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:49:20,771 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:15:1]: job id: operations/EPf9-pXmLBjs9N3Z2tPoz70BIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:20,771 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:14:1]: job id: operations/EIj--pXmLBiGs4WnyOS55ZgBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:49:51,496 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:13:1]: Status change from - to Running
+2018-10-11 19:49:51,501 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:11:1]: Status change from - to Running
+2018-10-11 19:49:51,507 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:4:1]: Status change from - to Running
+2018-10-11 19:49:51,512 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:1]: Status change from - to Initializing
+2018-10-11 19:49:51,517 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:16:1]: Status change from - to Preempted
+2018-10-11 19:49:51,522 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:9:1]: Status change from - to Running
+2018-10-11 19:49:51,527 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:17:1]: Status change from - to Initializing
+2018-10-11 19:49:51,532 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:3:1]: Status change from - to Preempted
+2018-10-11 19:49:51,536 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:2:1]: Status change from - to Running
+2018-10-11 19:49:51,541 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:10:1]: Status change from - to Running
+2018-10-11 19:49:51,545 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:0:1]: Status change from - to Initializing
+2018-10-11 19:49:51,549 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:5:1]: Status change from - to Running
+2018-10-11 19:49:51,554 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:12:1]: Status change from - to Running
+2018-10-11 19:49:51,558 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:6:1]: Status change from - to Initializing
+2018-10-11 19:49:51,562 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:7:1]: Status change from - to Initializing
+2018-10-11 19:49:51,566 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:8:1]: Status change from - to Preempted
+2018-10-11 19:49:51,571 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:14:1]: Status change from - to Preempted
+2018-10-11 19:49:51,575 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:15:1]: Status change from - to Running
+2018-10-11 19:49:55,761 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:14:2
+2018-10-11 19:49:55,763 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:3:2
+2018-10-11 19:49:55,765 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:16:2
+2018-10-11 19:49:55,766 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:8:2
+2018-10-11 19:49:56,170 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.ApplyBQSR (4 shards)
+2018-10-11 19:49:56,810 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:3:2]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 4:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:49:56,811 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:14:2]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 18:1+ -L 19:1+ -L 20:1+ -L 21:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:49:56,815 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:16:2]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L Y:1+ -L MT:1+ -L GL000207.1:1+ -L GL000226.1:1+ -L GL000229.1:1+ -L GL000231.1:1+ -L GL000210.1:1+ -L GL000239.1:1+ -L GL000235.1:1+ -L GL000201.1:1+ -L GL000247.1:1+ -L GL000245.1:1+ -L GL000197.1:1+ -L GL000203.1:1+ -L GL000246.1:1+ -L GL000249.1:1+ -L GL000196.1:1+ -L GL000248.1:1+ -L GL000244.1:1+ -L GL000238.1:1+ -L GL000202.1:1+ -L GL000234.1:1+ -L GL000232.1:1+ -L GL000206.1:1+ -L GL000240.1:1+ -L GL000236.1:1+ -L GL000241.1:1+ -L GL000243.1:1+ -L GL000242.1:1+ -L GL000230.1:1+ -L GL000237.1:1+ -L GL000233.1:1+ -L GL000204.1:1+ -L GL000198.1:1+ -L GL000208.1:1+ -L GL000191.1:1+ -L GL000227.1:1+ -L GL000228.1:1+ -L GL000214.1:1+ -L GL000221.1:1+ -L GL000209.1:1+ -L GL000218.1:1+ -L GL000220.1:1+ -L GL000213.1:1+ -L GL000211.1:1+ -L GL000199.1:1+ -L GL000217.1:1+ -L GL000216.1:1+ -L GL000215.1:1+ -L GL000205.1:1+ -L GL000219.1:1+ -L GL000224.1:1+ -L GL000223.1:1+ -L GL000195.1:1+ -L GL000212.1:1+ -L GL000222.1:1+ -L GL000200.1:1+ -L GL000193.1:1+ -L GL000194.1:1+ -L GL000225.1:1+ -L GL000192.1:1+ -L NC_007605:1+ -L hs37d5:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:49:56,817 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:8:2]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 9:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 19:50:30,749 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:8:2]: job id: operations/EIGO_5XmLBjr1vDpvdq8xJoBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:50:30,749 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:3:2]: job id: operations/EICO_5XmLBjR7oTlteG2po0BIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 19:50:30,749 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:16:2]: job id: operations/EIeO_5XmLBik0pGkiJ7ewV8gyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:50:30,749 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:14:2]: job id: operations/ELGO_5XmLBj49vHP_fCnsn4gyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 19:50:59,664 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:3:2]: Status change from - to Initializing
+2018-10-11 19:50:59,668 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:16:2]: Status change from - to Initializing
+2018-10-11 19:50:59,674 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:14:2]: Status change from - to Initializing
+2018-10-11 19:50:59,679 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:8:2]: Status change from - to Initializing
+2018-10-11 19:54:56,913 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:4:1]: Status change from Running to Success
+2018-10-11 19:55:31,637 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:12:1]: Status change from Running to Success
+2018-10-11 19:55:31,654 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:10:1]: Status change from Running to Success
+2018-10-11 19:56:05,035 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:15:1]: Status change from Running to Success
+2018-10-11 19:56:05,043 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:2:1]: Status change from Running to Success
+2018-10-11 19:56:38,200 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:9:1]: Status change from Running to Success
+2018-10-11 19:56:38,206 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:5:1]: Status change from Running to Success
+2018-10-11 19:57:13,600 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:13:1]: Status change from Running to Success
+2018-10-11 19:57:46,281 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:14:2]: Status change from Initializing to Running
+2018-10-11 19:57:46,288 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:0:1]: Status change from Initializing to Running
+2018-10-11 20:00:35,570 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:1]: Status change from Initializing to Running
+2018-10-11 20:00:35,581 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:8:2]: Status change from Initializing to Running
+2018-10-11 20:00:35,587 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:16:2]: Status change from Initializing to Running
+2018-10-11 20:00:35,592 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:3:2]: Status change from Initializing to Running
+2018-10-11 20:01:54,218 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:17:1]: Status change from Initializing to Running
+2018-10-11 20:01:54,224 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:6:1]: Status change from Initializing to Running
+2018-10-11 20:02:16,725 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:7:1]: Status change from Initializing to Running
+2018-10-11 20:03:03,345 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:1]: Status change from Running to Preempted
+2018-10-11 20:03:05,773 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:2
+2018-10-11 20:03:05,894 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.ApplyBQSR
+2018-10-11 20:03:06,809 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:2]: `
+/gatk/gatk --java-options "-Xms3000m" \
+  ApplyBQSR \
+  -R /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  -I /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-SortAndFixTags/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicate_marked.sorted.bam \
+  -O NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  -L 2:1+ \
+  -bqsr /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv \
+  --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 \
+  --add-output-sam-program-record \
+  --create-output-bam-md5 \
+  --use-original-qualities`
+2018-10-11 20:03:23,555 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:14:2]: Status change from Running to Success
+2018-10-11 20:03:25,743 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:2]: job id: operations/EJHIrpbmLBid0qraxv2V-MkBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 20:03:37,861 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:2]: Status change from - to Running
+2018-10-11 20:04:12,309 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:0:1]: Status change from Running to Success
+2018-10-11 20:05:54,535 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:16:2]: Status change from Running to Success
+2018-10-11 20:05:54,544 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:7:1]: Status change from Running to Success
+2018-10-11 20:06:29,057 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:3:2]: Status change from Running to Success
+2018-10-11 20:07:40,727 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:6:1]: Status change from Running to Success
+2018-10-11 20:09:00,309 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:8:2]: Status change from Running to Success
+2018-10-11 20:10:41,549 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:1:2]: Status change from Running to Success
+2018-10-11 20:12:09,958 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:11:1]: Status change from Running to Success
+2018-10-11 20:12:44,482 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.ApplyBQSR:17:1]: Status change from Running to Success
+2018-10-11 20:12:47,394 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.GatherBamFiles
+2018-10-11 20:12:47,824 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBamFiles:NA:1]: `/gatk/gatk --java-options "-Dsamjdk.compression_level=5 -Xms2000m" \
+  GatherBamFiles \
+  --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-0/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-1/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-3/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-4/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-5/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-6/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-7/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-8/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-9/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-10/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-11/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-12/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-13/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-14/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-15/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-16/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-17/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  --OUTPUT NGB0-075-KOD-NEB-18-2.b37.bam \
+  --CREATE_INDEX true \
+  --CREATE_MD5_FILE true`
+2018-10-11 20:13:00,755 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBamFiles:NA:1]: job id: operations/ELbC0ZbmLBj587yStLyFj0QgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 20:13:19,021 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBamFiles:NA:1]: Status change from - to Running
+2018-10-11 21:20:16,107 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBamFiles:NA:1]: Status change from Running to Preempted
+2018-10-11 21:20:20,749 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.GatherBamFiles:NA:2
+2018-10-11 21:20:21,424 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Starting PreProcessingForVariantDiscovery_GATK4.GatherBamFiles
+2018-10-11 21:20:21,823 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBamFiles:NA:2]: `/gatk/gatk --java-options "-Dsamjdk.compression_level=5 -Xms2000m" \
+  GatherBamFiles \
+  --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-0/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-1/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-3/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-4/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-5/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-6/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-7/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-8/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-9/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-10/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-11/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-12/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-13/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-14/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-15/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-16/attempt-2/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam --INPUT /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-ApplyBQSR/shard-17/NGB0-075-KOD-NEB-18-2.b37.aligned.duplicates_marked.recalibrated.bam \
+  --OUTPUT NGB0-075-KOD-NEB-18-2.b37.bam \
+  --CREATE_INDEX true \
+  --CREATE_MD5_FILE true`
+2018-10-11 21:20:50,754 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBamFiles:NA:2]: job id: operations/EPqSypjmLBjVp6288fatjroBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 21:21:23,629 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBamFiles:NA:2]: Status change from - to Running
+2018-10-11 21:28:39,056 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(096e2ed6)PreProcessingForVariantDiscovery_GATK4.GatherBamFiles:NA:2]: Status change from Running to Success
+2018-10-11 21:28:41,783 INFO  - 096e2ed6-29a1-400f-84db-86b93ba9800c-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(096e2ed6)]: Workflow PreProcess.PreProcessingForVariantDiscovery_GATK4 complete. Final Outputs:
+{
+  "PreProcessingForVariantDiscovery_GATK4.bqsr_report": "gs://ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBqsrReports/NGB0-075-KOD-NEB-18-2.b37.recal_data.csv",
+  "PreProcessingForVariantDiscovery_GATK4.duplication_metrics": "gs://ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-MarkDuplicates/NGB0-075-KOD-NEB-18-2.b37.duplicate_metrics",
+  "PreProcessingForVariantDiscovery_GATK4.analysis_ready_bam_md5": "gs://ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBamFiles/attempt-2/NGB0-075-KOD-NEB-18-2.b37.bam.md5",
+  "PreProcessingForVariantDiscovery_GATK4.analysis_ready_bam": "gs://ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBamFiles/attempt-2/NGB0-075-KOD-NEB-18-2.b37.bam",
+  "PreProcessingForVariantDiscovery_GATK4.analysis_ready_bam_index": "gs://ngb_cloud/cromwell-execution/FullPipeline/c13778dc-5e05-4ce9-acfc-f535df66a4a4/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/096e2ed6-29a1-400f-84db-86b93ba9800c/call-GatherBamFiles/attempt-2/NGB0-075-KOD-NEB-18-2.b37.bai"
+}

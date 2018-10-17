@@ -1,0 +1,20 @@
+#!/bin/bash
+# make sure there is no preexisting Docker CID file
+rm -f /home/ngenebio/gatk-workflows/cromwell-executions/wf_hello/51c76c76-cc13-4e9b-82b9-a998d70ac801/call-hello/execution/docker_cid
+# run as in the original configuration without --rm flag (will remove later)
+docker run \
+  --cidfile /home/ngenebio/gatk-workflows/cromwell-executions/wf_hello/51c76c76-cc13-4e9b-82b9-a998d70ac801/call-hello/execution/docker_cid \
+  -i \
+   \
+  --entrypoint /bin/bash \
+  -v /home/ngenebio/gatk-workflows/cromwell-executions/wf_hello/51c76c76-cc13-4e9b-82b9-a998d70ac801/call-hello:/cromwell-executions/wf_hello/51c76c76-cc13-4e9b-82b9-a998d70ac801/call-hello \
+  ubuntu@sha256:de774a3145f7ca4f0bd144c7d4ffb2931e06634f11529653b23eba85aef8e378 /cromwell-executions/wf_hello/51c76c76-cc13-4e9b-82b9-a998d70ac801/call-hello/execution/script
+
+# get the return code (working even if the container was detached)
+rc=$(docker wait `cat /home/ngenebio/gatk-workflows/cromwell-executions/wf_hello/51c76c76-cc13-4e9b-82b9-a998d70ac801/call-hello/execution/docker_cid`)
+
+# remove the container after waiting
+docker rm `cat /home/ngenebio/gatk-workflows/cromwell-executions/wf_hello/51c76c76-cc13-4e9b-82b9-a998d70ac801/call-hello/execution/docker_cid`
+
+# return exit code
+exit $rc

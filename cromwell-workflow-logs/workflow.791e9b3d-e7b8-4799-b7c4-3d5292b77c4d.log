@@ -1,0 +1,108 @@
+2018-10-11 14:00:18,903 INFO  - 791e9b3d-e7b8-4799-b7c4-3d5292b77c4d-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(791e9b3d)]: Starting PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV, PreProcessingForVariantDiscovery_GATK4.GetBwaVersion
+2018-10-11 14:00:21,066 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:1]: `# Not setting "set -o pipefail" here because /bwa has a rc=1 and we don't want to allow rc=1 to succeed 
+# because the sed may also fail with that error and that is something we actually want to fail on.
+/usr/gitc/bwa 2>&1 | \
+grep -e '^Version' | \
+sed 's/Version: //'`
+2018-10-11 14:00:21,106 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV:NA:1]: `python <<CODE
+with open("/cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.dict", "r") as ref_dict_file:
+    sequence_tuple_list = []
+    longest_sequence = 0
+    for line in ref_dict_file:
+        if line.startswith("@SQ"):
+            line_split = line.split("\t")
+            # (Sequence_Name, Sequence_Length)
+            sequence_tuple_list.append((line_split[1].split("SN:")[1], int(line_split[2].split("LN:")[1])))
+    longest_sequence = sorted(sequence_tuple_list, key=lambda x: x[1], reverse=True)[0][1]
+# We are adding this to the intervals because hg38 has contigs named with embedded colons (:) and a bug in 
+# some versions of GATK strips off the last element after a colon, so we add this as a sacrificial element.
+hg38_protection_tag = ":1+"
+# initialize the tsv string with the first sequence
+tsv_string = sequence_tuple_list[0][0] + hg38_protection_tag
+temp_size = sequence_tuple_list[0][1]
+for sequence_tuple in sequence_tuple_list[1:]:
+    if temp_size + sequence_tuple[1] <= longest_sequence:
+        temp_size += sequence_tuple[1]
+        tsv_string += "\t" + sequence_tuple[0] + hg38_protection_tag
+    else:
+        tsv_string += "\n" + sequence_tuple[0] + hg38_protection_tag
+        temp_size = sequence_tuple[1]
+# add the unmapped sequences as a separate line to ensure that they are recalibrated as well
+with open("sequence_grouping.txt","w") as tsv_file:
+  tsv_file.write(tsv_string)
+  tsv_file.close()
+
+tsv_string += '\n' + "unmapped"
+
+with open("sequence_grouping_with_unmapped.txt","w") as tsv_file_with_unmapped:
+  tsv_file_with_unmapped.write(tsv_string)
+  tsv_file_with_unmapped.close()
+CODE`
+2018-10-11 14:00:23,032 INFO  - 791e9b3d-e7b8-4799-b7c4-3d5292b77c4d-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(791e9b3d)]: Starting PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem
+2018-10-11 14:00:23,135 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem:0:1]: `  set -o pipefail
+  set -e
+
+  # set the bash variable needed for the command-line
+  bash_ref_fasta=/cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta
+
+java -Dsamjdk.compression_level=5 -Xms3000m -jar /usr/gitc/picard.jar \
+    SamToFastq \
+	INPUT=/cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/0c135f07-3e84-488b-bce2-ee3cc11e63d9/call-PreProcessFastqs/PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf/b24b8037-0ed8-4d14-957e-e1a5c7e95d6d/call-PairedFastQsToUnmappedBAM/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.bam \
+	FASTQ=/dev/stdout \
+	INTERLEAVE=true \
+	NON_PF=true \
+  | \
+/usr/gitc/bwa mem -K 100000000 -p -v 3 -t 16 -Y $bash_ref_fasta /dev/stdin -  2> >(tee NGB0-075-KOD-NEB-18-2.unmapped.unmerged.bwa.stderr.log >&2) \
+  | \
+samtools view -1 - > NGB0-075-KOD-NEB-18-2.unmapped.unmerged.bam`
+2018-10-11 14:00:47,255 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:1]: job id: operations/EIXH_ovmLBiMtKS198v3oEAgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 14:00:47,256 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV:NA:1]: job id: operations/EJTH_ovmLBi5seuw25iQoNIBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 14:00:47,259 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem:0:1]: job id: operations/EJLH_ovmLBj74tqx0M3zq-cBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 14:01:21,105 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV:NA:1]: Status change from - to Running
+2018-10-11 14:01:21,108 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:1]: Status change from - to Running
+2018-10-11 14:01:21,115 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem:0:1]: Status change from - to Running
+2018-10-11 14:02:26,379 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.CreateSequenceGroupingTSV:NA:1]: Status change from Running to Success
+2018-10-11 14:05:15,566 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.SamToFastqAndBwaMem:0:1]: Status change from Running to Success
+2018-10-11 14:07:29,276 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:1]: Status change from Running to Preempted
+2018-10-11 14:07:32,275 INFO  - 791e9b3d-e7b8-4799-b7c4-3d5292b77c4d-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(791e9b3d)]: Retrying job execution for PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:2
+2018-10-11 14:07:33,250 INFO  - 791e9b3d-e7b8-4799-b7c4-3d5292b77c4d-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(791e9b3d)]: Starting PreProcessingForVariantDiscovery_GATK4.GetBwaVersion
+2018-10-11 14:07:34,132 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:2]: `# Not setting "set -o pipefail" here because /bwa has a rc=1 and we don't want to allow rc=1 to succeed 
+# because the sed may also fail with that error and that is something we actually want to fail on.
+/usr/gitc/bwa 2>&1 | \
+grep -e '^Version' | \
+sed 's/Version: //'`
+2018-10-11 14:08:07,254 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:2]: job id: operations/EKOmmYzmLBj1lsiNg7L09WkgyJGInf8LKg9wcm9kdWN0aW9uUXVldWU
+2018-10-11 14:08:37,106 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:2]: Status change from - to Running
+2018-10-11 14:11:58,455 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.GetBwaVersion:NA:2]: Status change from Running to Success
+2018-10-11 14:12:01,267 INFO  - 791e9b3d-e7b8-4799-b7c4-3d5292b77c4d-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(791e9b3d)]: Starting PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment
+2018-10-11 14:12:04,110 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:1]: `# set the bash variable needed for the command-line
+bash_ref_fasta=/cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta
+/gatk/gatk --java-options "-Dsamjdk.compression_level=5 -Xms3000m" \
+  MergeBamAlignment \
+  --VALIDATION_STRINGENCY SILENT \
+  --EXPECTED_ORIENTATIONS FR \
+  --ATTRIBUTES_TO_RETAIN X0 \
+  --ALIGNED_BAM /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/0c135f07-3e84-488b-bce2-ee3cc11e63d9/call-PreProcessTumor/PreProcess.PreProcessingForVariantDiscovery_GATK4/791e9b3d-e7b8-4799-b7c4-3d5292b77c4d/call-SamToFastqAndBwaMem/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.unmerged.bam \
+  --UNMAPPED_BAM /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/0c135f07-3e84-488b-bce2-ee3cc11e63d9/call-PreProcessFastqs/PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf/b24b8037-0ed8-4d14-957e-e1a5c7e95d6d/call-PairedFastQsToUnmappedBAM/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.bam \
+  --OUTPUT NGB0-075-KOD-NEB-18-2.unmapped.aligned.unsorted.bam \
+  --REFERENCE_SEQUENCE /cromwell_root/gatk-legacy-bundles/b37/human_g1k_v37_decoy.fasta \
+  --PAIRED_RUN true \
+  --SORT_ORDER "unsorted" \
+  --IS_BISULFITE_SEQUENCE false \
+  --ALIGNED_READS_ONLY false \
+  --CLIP_ADAPTERS false \
+  --MAX_RECORDS_IN_RAM 2000000 \
+  --ADD_MATE_CIGAR true \
+  --MAX_INSERTIONS_OR_DELETIONS -1 \
+  --PRIMARY_ALIGNMENT_STRATEGY MostDistant \
+  --PROGRAM_RECORD_ID "bwamem" \
+  --PROGRAM_GROUP_VERSION "0.7.15-r1140" \
+  --PROGRAM_GROUP_COMMAND_LINE "bwa mem -K 100000000 -p -v 3 -t 16 -Y $bash_ref_fasta" \
+  --PROGRAM_GROUP_NAME "bwamem" \
+  --UNMAPPED_READ_STRATEGY COPY_TO_TAG \
+  --ALIGNER_PROPER_PAIR_FLAGS true \
+  --UNMAP_CONTAMINANT_READS true`
+2018-10-11 14:12:37,253 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:1]: job id: operations/EMjdqYzmLBjk-uH_v-T-nOwBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-11 14:13:06,337 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:1]: Status change from - to Running
+2018-10-11 14:51:43,796 INFO  - 791e9b3d-e7b8-4799-b7c4-3d5292b77c4d-SubWorkflowActor-SubWorkflow-PreProcessTumor:-1:1 [UUID(791e9b3d)]: Aborting workflow
+2018-10-11 14:51:43,807 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d)PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:1]: PipelinesApiAsyncBackendJobExecutionActor [UUID(791e9b3d):PreProcessingForVariantDiscovery_GATK4.MergeBamAlignment:0:1] Aborted StandardAsyncJob(operations/EMjdqYzmLBjk-uH_v-T-nOwBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl)

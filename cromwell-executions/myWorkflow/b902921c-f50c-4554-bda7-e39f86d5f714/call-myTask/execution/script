@@ -1,0 +1,37 @@
+#!/bin/bash
+
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution
+tmpDir=$(mkdir -p "/home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/tmp.e03ac9ff" && echo "/home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/tmp.e03ac9ff")
+
+export _JAVA_OPTIONS=-Djava.io.tmpdir="$tmpDir"
+export TMPDIR="$tmpDir"
+export HOME="$HOME"
+(
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution
+
+)
+outb902921c="${tmpDir}/out.$$" errb902921c="${tmpDir}/err.$$"
+mkfifo "$outb902921c" "$errb902921c"
+trap 'rm "$outb902921c" "$errb902921c"' EXIT
+tee '/home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution/stdout' < "$outb902921c" &
+tee '/home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution/stderr' < "$errb902921c" >&2 &
+(
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution
+
+
+echo "hello world"
+sleep 10
+)  > "$outb902921c" 2> "$errb902921c"
+echo $? > /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution/rc.tmp
+(
+# add a .file in every empty directory to facilitate directory delocalization on the cloud
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution
+find . -type d -empty -print0 | xargs -0 -I % touch %/.file
+)
+(
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution
+sync
+
+
+)
+mv /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution/rc.tmp /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/b902921c-f50c-4554-bda7-e39f86d5f714/call-myTask/execution/rc

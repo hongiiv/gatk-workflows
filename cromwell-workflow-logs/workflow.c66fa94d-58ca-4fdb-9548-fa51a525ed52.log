@@ -1,0 +1,26 @@
+2018-10-12 16:44:32,095 INFO  - c66fa94d-58ca-4fdb-9548-fa51a525ed52-SubWorkflowActor-SubWorkflow-PreProcessFastqs:-1:1 [UUID(c66fa94d)]: Starting ConvertPairedFastQsToUnmappedBamWf.PairedFastQsToUnmappedBAM
+2018-10-12 16:44:33,562 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(c66fa94d)ConvertPairedFastQsToUnmappedBamWf.PairedFastQsToUnmappedBAM:0:1]: `/gatk/gatk --java-options "-Xmx3000m" \
+FastqToSam \
+--FASTQ /cromwell_root/ngb_cloud/fastq/NGB0-075-KOD-NEB-18-2_S24_L001_R1_001.fastq.gz \
+--FASTQ2 /cromwell_root/ngb_cloud/fastq/NGB0-075-KOD-NEB-18-2_S24_L001_R2_001.fastq.gz \
+--OUTPUT NGB0-075-KOD-NEB-18-2.unmapped.bam \
+--READ_GROUP_NAME NGB0-075-KOD-NEB-18-2 \
+--SAMPLE_NAME NGB0-075-KOD-NEB-18-2 \
+--LIBRARY_NAME Illumina-NGB0-075 \
+--PLATFORM_UNIT H06HDADXX130110.2.ATCACGAT \
+--RUN_DATE 2016-09-01T02:00:00+0200 \
+--PLATFORM illumina \
+--SEQUENCING_CENTER BI`
+2018-10-12 16:45:01,537 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(c66fa94d)ConvertPairedFastQsToUnmappedBamWf.PairedFastQsToUnmappedBAM:0:1]: job id: operations/EO6n8bnmLBi7--yXkYWUuIYBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-12 16:45:30,341 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(c66fa94d)ConvertPairedFastQsToUnmappedBamWf.PairedFastQsToUnmappedBAM:0:1]: Status change from - to Running
+2018-10-12 16:48:51,723 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(c66fa94d)ConvertPairedFastQsToUnmappedBamWf.PairedFastQsToUnmappedBAM:0:1]: Status change from Running to Success
+2018-10-12 16:48:55,568 INFO  - c66fa94d-58ca-4fdb-9548-fa51a525ed52-SubWorkflowActor-SubWorkflow-PreProcessFastqs:-1:1 [UUID(c66fa94d)]: Starting ConvertPairedFastQsToUnmappedBamWf.CreateFoFN
+2018-10-12 16:48:58,152 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(c66fa94d)ConvertPairedFastQsToUnmappedBamWf.CreateFoFN:NA:1]: `mv /cromwell_root/ngb_cloud/cromwell-execution/FullPipeline/1bb3c492-afaf-4a87-9cac-383fddffa398/call-PreProcessFastqs/PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf/c66fa94d-58ca-4fdb-9548-fa51a525ed52/call-CreateFoFN/write_lines_f784d27434759e777bcd1fb7125b5f39.tmp  NGB0-075_unmapped_bam.list`
+2018-10-12 16:49:26,511 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(c66fa94d)ConvertPairedFastQsToUnmappedBamWf.CreateFoFN:NA:1]: job id: operations/ELnYgbrmLBjHpvGOxN7vmIsBIMiRiJ3_CyoPcHJvZHVjdGlvblF1ZXVl
+2018-10-12 16:49:59,074 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(c66fa94d)ConvertPairedFastQsToUnmappedBamWf.CreateFoFN:NA:1]: Status change from - to Running
+2018-10-12 16:55:00,978 INFO  - PipelinesApiAsyncBackendJobExecutionActor [UUID(c66fa94d)ConvertPairedFastQsToUnmappedBamWf.CreateFoFN:NA:1]: Status change from Running to Success
+2018-10-12 16:55:03,779 INFO  - c66fa94d-58ca-4fdb-9548-fa51a525ed52-SubWorkflowActor-SubWorkflow-PreProcessFastqs:-1:1 [UUID(c66fa94d)]: Workflow PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf complete. Final Outputs:
+{
+  "ConvertPairedFastQsToUnmappedBamWf.output_bams": ["gs://ngb_cloud/cromwell-execution/FullPipeline/1bb3c492-afaf-4a87-9cac-383fddffa398/call-PreProcessFastqs/PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf/c66fa94d-58ca-4fdb-9548-fa51a525ed52/call-PairedFastQsToUnmappedBAM/shard-0/NGB0-075-KOD-NEB-18-2.unmapped.bam"],
+  "ConvertPairedFastQsToUnmappedBamWf.unmapped_bam_list": "gs://ngb_cloud/cromwell-execution/FullPipeline/1bb3c492-afaf-4a87-9cac-383fddffa398/call-PreProcessFastqs/PreProcessFastq.ConvertPairedFastQsToUnmappedBamWf/c66fa94d-58ca-4fdb-9548-fa51a525ed52/call-CreateFoFN/NGB0-075_unmapped_bam.list"
+}

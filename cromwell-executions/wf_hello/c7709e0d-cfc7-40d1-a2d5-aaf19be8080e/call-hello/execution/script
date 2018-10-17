@@ -1,0 +1,36 @@
+#!/bin/bash
+
+cd /cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution
+tmpDir=$(mkdir -p "/cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/tmp.91cf9d63" && echo "/cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/tmp.91cf9d63")
+chmod 777 "$tmpDir"
+export _JAVA_OPTIONS=-Djava.io.tmpdir="$tmpDir"
+export TMPDIR="$tmpDir"
+export HOME="$HOME"
+(
+cd /cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution
+
+)
+outc7709e0d="${tmpDir}/out.$$" errc7709e0d="${tmpDir}/err.$$"
+mkfifo "$outc7709e0d" "$errc7709e0d"
+trap 'rm "$outc7709e0d" "$errc7709e0d"' EXIT
+tee '/cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution/stdout' < "$outc7709e0d" &
+tee '/cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution/stderr' < "$errc7709e0d" >&2 &
+(
+cd /cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution
+
+
+echo "Hello World! Welcome to Cromwell . . . on Google Cloud!"
+)  > "$outc7709e0d" 2> "$errc7709e0d"
+echo $? > /cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution/rc.tmp
+(
+# add a .file in every empty directory to facilitate directory delocalization on the cloud
+cd /cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution
+find . -type d -empty -print0 | xargs -0 -I % touch %/.file
+)
+(
+cd /cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution
+sync
+
+
+)
+mv /cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution/rc.tmp /cromwell-executions/wf_hello/c7709e0d-cfc7-40d1-a2d5-aaf19be8080e/call-hello/execution/rc

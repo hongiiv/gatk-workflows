@@ -1,0 +1,38 @@
+#!/bin/bash
+
+cd /cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution
+tmpDir=$(mkdir -p "/cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/tmp.ff1bb435" && echo "/cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/tmp.ff1bb435")
+chmod 777 "$tmpDir"
+export _JAVA_OPTIONS=-Djava.io.tmpdir="$tmpDir"
+export TMPDIR="$tmpDir"
+export HOME="$HOME"
+(
+cd /cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution
+
+)
+out7c539b85="${tmpDir}/out.$$" err7c539b85="${tmpDir}/err.$$"
+mkfifo "$out7c539b85" "$err7c539b85"
+trap 'rm "$out7c539b85" "$err7c539b85"' EXIT
+tee '/cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution/stdout' < "$out7c539b85" &
+tee '/cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution/stderr' < "$err7c539b85" >&2 &
+(
+cd /cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution
+
+
+echo "hello world"
+sleep 10
+uname -a
+)  > "$out7c539b85" 2> "$err7c539b85"
+echo $? > /cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution/rc.tmp
+(
+# add a .file in every empty directory to facilitate directory delocalization on the cloud
+cd /cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution
+find . -type d -empty -print0 | xargs -0 -I % touch %/.file
+)
+(
+cd /cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution
+sync
+
+
+)
+mv /cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution/rc.tmp /cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution/rc

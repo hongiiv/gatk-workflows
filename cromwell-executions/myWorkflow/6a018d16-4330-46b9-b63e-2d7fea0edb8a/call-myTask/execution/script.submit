@@ -1,0 +1,14 @@
+#!/bin/bash
+qsub \
+-terse \
+-V \
+-b y \
+-N cromwell_6a018d16_myTask \
+-wd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/6a018d16-4330-46b9-b63e-2d7fea0edb8a/call-myTask \
+-o /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/6a018d16-4330-46b9-b63e-2d7fea0edb8a/call-myTask/execution/stdout \
+-e /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/6a018d16-4330-46b9-b63e-2d7fea0edb8a/call-myTask/execution/stderr \
+-pe make 1 \
+ \
+ \
+ \
+/usr/bin/env bash /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/6a018d16-4330-46b9-b63e-2d7fea0edb8a/call-myTask/execution/script

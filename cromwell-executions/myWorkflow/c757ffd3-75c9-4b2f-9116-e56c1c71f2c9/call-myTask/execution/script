@@ -1,0 +1,38 @@
+#!/bin/bash
+
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution
+tmpDir=$(mkdir -p "/home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/tmp.1c854be3" && echo "/home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/tmp.1c854be3")
+
+export _JAVA_OPTIONS=-Djava.io.tmpdir="$tmpDir"
+export TMPDIR="$tmpDir"
+export HOME="$HOME"
+(
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution
+
+)
+outc757ffd3="${tmpDir}/out.$$" errc757ffd3="${tmpDir}/err.$$"
+mkfifo "$outc757ffd3" "$errc757ffd3"
+trap 'rm "$outc757ffd3" "$errc757ffd3"' EXIT
+tee '/home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution/stdout' < "$outc757ffd3" &
+tee '/home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution/stderr' < "$errc757ffd3" >&2 &
+(
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution
+
+
+echo "hello world"
+sleep 10
+uname -a
+)  > "$outc757ffd3" 2> "$errc757ffd3"
+echo $? > /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution/rc.tmp
+(
+# add a .file in every empty directory to facilitate directory delocalization on the cloud
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution
+find . -type d -empty -print0 | xargs -0 -I % touch %/.file
+)
+(
+cd /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution
+sync
+
+
+)
+mv /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution/rc.tmp /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/c757ffd3-75c9-4b2f-9116-e56c1c71f2c9/call-myTask/execution/rc
