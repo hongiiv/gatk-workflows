@@ -1,15 +1,14 @@
 ## GATK Workflow
 
-* Google Cloud SDK install
-* Google Cloud auth
-* MySQL install
-* Workflow run
+### Google Cloud SDK install
+
+### MySQL install
+
+### Google Cloud auth
 
 `# gcloud init`
 
 `# gcloud auth login <login-id>`
-
-enter the password
 
 `# gcloud auth application-default login`
 
@@ -19,7 +18,9 @@ enter the password
 
 `# cd gatk-workflows`
 
-edit google.conf
+### Edit application options (edit google.conf)
+
+### Run
 
 `# java -Dconfig.file=google.conf -jar cromwell-35.jar run hello.wdl -o generic.google-papi.options.json`
 
