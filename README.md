@@ -1,10 +1,15 @@
-## The new standard in cloud bioinformatics (WDL+Cromwell)
+### The new standard in cloud bioinformatics (WDL+Cromwell)
 
-### Installing Google Cloud SDK
+#### Installing Google Cloud SDK
+[https://cloud.google.com/sdk/install](https://cloud.google.com/sdk/install)
 
-### Installing MySQL database
+#### Installing MySQL database
 
-### Authorizing Google Cloud
+#### Download Cromwell jar
+
+`# wget https://github.com/broadinstitute/cromwell/releases/download/36/cromwell-36.jar`
+
+#### Authorizing Google Cloud
 
 `# gcloud init`
 
@@ -18,11 +23,24 @@
 
 `# cd gatk-workflows`
 
-### Edit application options (edit google.conf, generic.google-papi.options.json)
+#### Download gatk-workflows for somatic
+`# git clone https://github.com/hongiiv/gatk-workflows.git`
 
-### Run
+copy cromwell.jar
+
+`cp cromwell-36.jar gatk-workflows/`
+
+
+#### Edit application options (edit google.conf, generic.google-papi.options.json)
+* MySQL database id/pw
+* Google Cloud id/pw
+* Google project
+
+#### Run Cromwell server
 
 `# java -Dconfig.file=google.conf -jar cromwell-35.jar run hello.wdl -o generic.google-papi.options.json`
+
+#### Run workflow
 
 	# java -Dconfig.file=google.conf -jar cromwell-35.jar \
 	submit FullPipeline.wdl \
