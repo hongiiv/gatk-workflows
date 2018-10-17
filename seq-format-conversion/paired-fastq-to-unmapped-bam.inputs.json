@@ -1,0 +1,30 @@
+{
+  "##_Comment1": "Inputs",
+  "ConvertPairedFastQsToUnmappedBamWf.readgroup_name": ["NGB0-075-KOD-NEB-18-2"],
+  "ConvertPairedFastQsToUnmappedBamWf.sample_name": ["NGB0-075-KOD-NEB-18-2"],
+  "ConvertPairedFastQsToUnmappedBamWf.fastq_1": ["gs://ngb_cloud/fastq/NGB0-075-KOD-NEB-18-2_S24_L001_R1_001.fastq.gz"],
+  "ConvertPairedFastQsToUnmappedBamWf.fastq_2": ["gs://ngb_cloud/fastq/NGB0-075-KOD-NEB-18-2_S24_L001_R2_001.fastq.gz"],
+  "ConvertPairedFastQsToUnmappedBamWf.library_name": ["Illumina-NGB0-075"],
+  "ConvertPairedFastQsToUnmappedBamWf.platform_unit": ["H06HDADXX130110.2.ATCACGAT"],
+  "ConvertPairedFastQsToUnmappedBamWf.run_date": ["2016-09-01T02:00:00+0200"],
+  "ConvertPairedFastQsToUnmappedBamWf.platform_name": ["illumina"],
+  "ConvertPairedFastQsToUnmappedBamWf.sequencing_center": ["BI"],
+
+  "##_Comment2": "Output ubam list",
+  "ConvertPairedFastQsToUnmappedBamWf.ubam_list_name": "NGB0-075_unmapped_bam",
+
+  "##_Comment3": "GATK Luanch Path",
+  "#ConvertPairedFastQsToUnmappedBamWf.PairedFastQsToUnmappedBAM.gatk_path_override": "(optional) String?",
+  
+  "##_Comment4": "Docker",
+  "#ConvertPairedFastQsToUnmappedBamWf.gatk_docker_override": "(optional) String?",
+
+  "##_Comment5": "Disk Space",
+  "#ConvertPairedFastQsToUnmappedBamWf.PairedFastQsToUnmappedBAM.disk_space_gb": "(optional) Int?",
+
+  "##_Comment6": "Memory",
+  "#ConvertPairedFastQsToUnmappedBamWf.PairedFastQsToUnmappedBAM.machine_mem_gb": "(optional) Int?",
+
+  "##_Comment7": "Preemptibles",
+  "#ConvertPairedFastQsToUnmappedBamWf.preemptible_attempts": "(optional) Int?"
+}
