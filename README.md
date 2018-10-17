@@ -1,10 +1,10 @@
-## GATK Workflow
+## The new standard in cloud bioinformatics (WDL+Cromwell)
 
-### Google Cloud SDK install
+### Installing Google Cloud SDK
 
-### MySQL install
+### Installing MySQL database
 
-### Google Cloud auth
+### Authorizing Google Cloud
 
 `# gcloud init`
 
@@ -18,7 +18,7 @@
 
 `# cd gatk-workflows`
 
-### Edit application options (edit google.conf)
+### Edit application options (edit google.conf, generic.google-papi.options.json)
 
 ### Run
 
