@@ -5,6 +5,8 @@
 
 #### Installing MySQL database
 
+* Create database 'cromwell'
+
 #### Download Cromwell jar
 
 `# wget https://github.com/broadinstitute/cromwell/releases/download/36/cromwell-36.jar`
@@ -31,10 +33,10 @@ copy cromwell.jar
 `cp cromwell-36.jar gatk-workflows/`
 
 
-#### Edit application options (edit google.conf, generic.google-papi.options.json)
-* MySQL database id/pw
-* Google Cloud id/pw
-* Google project
+#### Edit application options (edit google.conf)
+* MySQL database id/pw (user = your mysql id, password = your mysql p/w)
+* Google project (project = your google project name)
+* Base bucket (root = your google storage bucket name)
 
 #### Run Cromwell server
 
