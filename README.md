@@ -29,11 +29,22 @@ This code tested on Cromwell v35.
 
 
 ### Download gatk-workflows for somatic
+
 `# git clone https://github.com/hongiiv/gatk-workflows.git`
 
 copy cromwell.jar
 
-`cp cromwell-36.jar gatk-workflows/`
+`# cp cromwell-36.jar gatk-workflows/`
+
+`# cd gatk-workfolws`
+
+This workflow calls another workflow, that second workflow is referred to as a sub-workflow. This workflow based on [official GATK workflows](https://github.com/gatk-workflows/)
+
+* seq-format-conversion
+* gatk4-data-processing
+* gatk4-somatic-snvs-indes
+
+`# zip -r workflowDependencies.zip ./gatk4-data-processing/ ./gatk4-somatic-snvs-indels/ ./seq-format-conversion/`
 
 
 ### Edit application options (edit google.conf)
