@@ -1,6 +1,6 @@
 ## The new standard in cloud bioinformatics (WDL+Cromwell)
 
-### Prerequisites
+#### Prerequisites
 
 * A Unix-based operating system (Mac/Linux)
 * A Java 8 runtime environment (you can download java [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html))
@@ -11,13 +11,13 @@
   * Google Cloud Strorage
   * Google Genomics API
   
-### Download Cromwell jar
+#### Download Cromwell jar
 
 This code tested on Cromwell v35.
 
 `# wget https://github.com/broadinstitute/cromwell/releases/download/36/cromwell-36.jar`
 
-### Authorizing Google Cloud
+#### Authorizing Google Cloud
 
 `# gcloud init`
 
@@ -28,7 +28,7 @@ This code tested on Cromwell v35.
 `# gcloud config set project <google-cloud-project-id>`
 
 
-### Download gatk-workflows for somatic
+#### Download gatk-workflows for somatic
 
 `# git clone https://github.com/hongiiv/gatk-workflows.git`
 
@@ -47,16 +47,16 @@ This workflow calls another workflow, that second workflow is referred to as a s
 `# zip -r workflowDependencies.zip ./gatk4-data-processing/ ./gatk4-somatic-snvs-indels/ ./seq-format-conversion/`
 
 
-### Edit application options (edit google.conf)
+#### Edit application options (edit google.conf)
 * MySQL database id/pw (user = your mysql id, password = your mysql p/w)
 * Google project (project = your google project name)
 * Base bucket (root = your google storage bucket name)
 
-### Run Cromwell server
+#### Run Cromwell server
 
 `# java -Dconfig.file=google.conf -jar cromwell-35.jar run hello.wdl -o generic.google-papi.options.json`
 
-### Run workflow via Cromwell server
+#### Run workflow via Cromwell server
 
 	# java -Dconfig.file=google.conf -jar cromwell-35.jar \
 	submit FullPipeline.wdl \
@@ -65,13 +65,13 @@ This workflow calls another workflow, that second workflow is referred to as a s
 	-h http://localhost:8080 \
 	-p workflowDependencies.zip
 
-### Run workflow via command
+#### Run workflow via command
 	# java -Dconfig.file=google.conf -jar cromwell-35.jar \
 	run FullPipeline.wdl \
 	-I FullPipeline.input.json \
 	-o generic.google.papi-options.json \ 
 	
-### Run workflow via REST API
+#### Run workflow via REST API
 	# curl -X POST "http://localhost:8080/api/workflows/v1" \
 	-H "accept: application/json" -H "Content-Type: multipart/form-data" \
 	-F "workflowSource=@FullPipeline.wdl;type=" \
