@@ -40,9 +40,9 @@ copy cromwell.jar
 
 This workflow calls another workflow, that second workflow is referred to as a sub-workflow. This workflow based on [official GATK workflows](https://github.com/gatk-workflows/)
 
-* seq-format-conversion
-* gatk4-data-processing
-* gatk4-somatic-snvs-indes
+* [seq-format-conversion](https://github.com/gatk-workflows/seq-format-conversion): Workflows for converting between sequence data formats
+* [gatk4-data-processing](https://github.com/gatk-workflows/gatk4-data-processing): Workflows for processing high-throughput sequencing data for variant discovery with GATK4 and related tools
+* [gatk4-somatic-snvs-indes](https://github.com/gatk-workflows/gatk4-somatic-snvs-indels): Workflows for somatic shrot variant discovery with GATK4
 
 `# zip -r workflowDependencies.zip ./gatk4-data-processing/ ./gatk4-somatic-snvs-indels/ ./seq-format-conversion/`
 
