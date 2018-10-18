@@ -45,7 +45,7 @@ copy cromwell.jar
 
 `# java -Dconfig.file=google.conf -jar cromwell-35.jar run hello.wdl -o generic.google-papi.options.json`
 
-### Run workflow
+### Run workflow via Cromwell server
 
 	# java -Dconfig.file=google.conf -jar cromwell-35.jar \
 	submit FullPipeline.wdl \
@@ -53,3 +53,21 @@ copy cromwell.jar
 	-o generic.google-papi-options.json \
 	-h http://localhost:8080 \
 	-p workflowDependencies.zip
+
+### Run workflow via command
+	# java -Dconfig.file=google.conf -jar cromwell-35.jar \
+	run FullPipeline.wdl \
+	-I FullPipeline.input.json \
+	-o generic.google.papi-options.json \ 
+	
+### Run workflow via REST API
+	# curl -X POST "http://localhost:8080/api/workflows/v1" \
+	-H "accept: application/json" -H "Content-Type: multipart/form-data" \
+	-F "workflowSource=@FullPipeline.wdl;type=" \
+	-F "workflowInputs=@FullPipeline.input.json;type=application/json" \
+	-F "workflowDependencies=@workflowDependencies.zip;type=application/zip"
+
+### Run workflow via REST API using Cromwell Server
+
+You can access swagger web page (http://localhost:8080)
+
