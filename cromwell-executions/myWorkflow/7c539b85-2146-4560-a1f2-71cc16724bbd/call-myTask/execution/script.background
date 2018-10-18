@@ -1,3 +1,0 @@
-#!/bin/bash
-'/bin/bash' '/home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution/script.submit' < /dev/null || { rc=$?; if [ "$rc" -gt "128" ]; then echo $rc; else echo -1; fi } > /home/ngenebio/gatk-workflows/cromwell-executions/myWorkflow/7c539b85-2146-4560-a1f2-71cc16724bbd/call-myTask/execution/rc &
-echo $!

@@ -1,2 +1,0 @@
-2018-10-15 16:50:28,135 INFO  - MaterializeWorkflowDescriptorActor [UUID(0374818f)]: Parsing workflow as WDL draft-2
-2018-10-15 16:50:28,631 INFO  - MaterializeWorkflowDescriptorActor [UUID(0374818f)]: Call-to-Backend assignments: myWorkflow.myTask -> SGE
