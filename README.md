@@ -78,7 +78,21 @@ This workflow calls another workflow, that second workflow is referred to as a s
 	-F "workflowInputs=@FullPipeline.input.json;type=application/json" \
 	-F "workflowDependencies=@workflowDependencies.zip;type=application/zip"
 
-### Run workflow via REST API using Cromwell Server
+#### Run workflow via REST API using Cromwell Server
 
 You can access swagger web page (http://localhost:8080)
+
+#### FAQ
+
+Q: Workflow를 실행하는 방법이 여러개가 존재합니다. 어떠한 방법을 사용하는것이 좋을까요?
+
+A: Server 모드 (REST API 또는 submit 명령)를 통해 실행하는 것이 좋습니다. 해당 workflow를 관리가 가능하기 때문입니다.
+
+Q: 왜 GATK workflow에서는 FASTQ 파일 대신 uBAM을 기본으로 사용합니까?
+
+A: 최근 발표된 "Standards Guidelines for Validating Next-Generation Sequencing Bioinformatics Pipelines"에 따르면 laboratory, run, patient identifiers가 파일의 메타데이터에 기록될 것을 권고하고 있습니다. 또한 파일 이름 자체에도 이러한 식별자가 표시되어야 한다고 권고하고 있습니ㅏㄷ. 이러한 요구사항을 충족 시키기 위해서는 uBAM이 적합합니다.
+
+Q: WDL을 지원하는 상업적인 서비스가 존재합니까?
+
+A: 미국의 [DNAnexus](https://www.dnanexus.com)와 캐나다의 [DNAstack](https://www.dnastack.com)이 WDL을 지원하고 있습니다.
 
