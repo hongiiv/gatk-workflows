@@ -90,7 +90,7 @@ A: Server 모드 (REST API 또는 submit 명령)를 통해 실행하는 것이 �
 
 Q: 왜 GATK workflow에서는 FASTQ 파일 대신 uBAM을 기본으로 사용합니까?
 
-A: 최근 발표된 "Standards Guidelines for Validating Next-Generation Sequencing Bioinformatics Pipelines"에 따르면 laboratory, run, patient identifiers가 파일의 메타데이터에 기록될 것을 권고하고 있습니다. 또한 파일 이름 자체에도 이러한 식별자가 표시되어야 한다고 권고하고 있습니ㅏㄷ. 이러한 요구사항을 충족 시키기 위해서는 uBAM이 적합합니다.
+A: 최근 발표된 "Standards Guidelines for Validating Next-Generation Sequencing Bioinformatics Pipelines"에 따르면 laboratory, run, patient identifiers가 파일의 메타 데이터에 기록될 것을 권고하고 있습니다. 또한 파일 이름 자체에도 이러한 식별자가 표시되어야 한다고 권고하고 있습니다. 이러한 요구사항을 충족 시키기 위해서는 uBAM이 적합합니다.
 
 Q: WDL을 지원하는 상업적인 서비스가 존재합니까?
 
