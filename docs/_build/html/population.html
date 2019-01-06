@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>제3장 인구 집단 비교 &mdash; Book  documentation</title>
+  <title>인구 집단 비교 &mdash; Book  documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="제4장 염색체 이상 찾기" href="nipt.html" />
-    <link rel="prev" title="제2장 유전적 거리 측정" href="distance.html" /> 
+    <link rel="next" title="염색체 이상 찾기" href="nipt.html" />
+    <link rel="prev" title="유전적 거리 측정" href="distance.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -80,16 +80,16 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="perface.html">Perface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="genome_data.html">제1장 유전체 데이터</a></li>
-<li class="toctree-l1"><a class="reference internal" href="distance.html">제2장 유전적 거리 측정</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">제3장 인구 집단 비교</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="genome_data.html">유전체 데이터</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distance.html">유전적 거리 측정</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">인구 집단 비교</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#pca">PCA를 이용한 인구집단 표시</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#">인구집단 데이터</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#">참조 인구집단 데이터셋 만들기</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pca">PCA를 이용한 클러스터링</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">인구집단 데이터</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">참조 인구집단 데이터셋 만들기</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">PCA를 이용한 클러스터링</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nipt.html">제4장 염색체 이상 찾기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nipt.html">염색체 이상 찾기</a></li>
 </ul>
 
             
@@ -135,13 +135,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>제3장 인구 집단 비교</li>
+      <li>인구 집단 비교</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/population.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/population.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -154,26 +154,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="">
-<span id="id1"></span><h1>제3장 인구 집단 비교<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="id1">
+<h1>인구 집단 비교<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <p>인종 간에 신체적, 문화적으로 서로 다양함을 보유하고 있다. 다양함에 있어서 유전적인 원인 또한 큰 부분을 차지하고 있다. 인종 또는 집단에서의 유전적인 특징을 연구하는 것을 집단 유전학(population genetics)라고 한다. 일본에서 이루어진 연구를 보면 일본인 7,003명의 샘플을 모아 유전체 데이터를 분석한 결과 오키나와 지방에 거주하는 류큐(Ryukyu)와 일본 본토의 혼도(Hondo) 두개의 집단으로 분류된다는 것이다. 이 두 집단간의 가장 큰 차이를 보인 마커는 바로 귀지(마커 rs17822931)와 머리카락 굵기(rs3827760)와 관련된 유전자로 우리나라의 경우에는 100%가 마른 귀지 타입(지노타입 AA)을 가지고 있는데 반해 일본은 마른 귀지와 젖은 귀지가 혼재하고 있다.</p>
 <p>일본인의 유래에 대한 가설로는 16,000년전 일본에 원래 거주하던 조몬과 3,000~18,00년전 한반도를 통해 넘어온 야오이 두 그룹이 기원이라는 이중 구조(dual structure) 모델과 원래 하나의 민족이라는 하나의 기원(single origin) 가설이 존재하는데 한반도에서 넘어온 야오이(마른 귀지) 사람과 일본내에 거주하던 조몬(젖은 귀지)이 혼합된 민족임을 시사한다.</p>
-<p>이번 장을 끝마치면 당신은 아래의 3가지에 대해서 배울 수 있다.</p>
-<ul class="simple">
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="last docutils">
+<dt>이번 장을 끝마치면 당신은 아래의 3가지에 대해서 배울 수 있다.</dt>
+<dd><ul class="first last simple">
 <li>전세계 인종의 공용 유전체 데이터에 접근하는 방법</li>
 <li>23anMe 데이터와 1000 Genomes Project 데이터를 결합하는 방법</li>
 <li>PCA 분석을 통해 인구집단의 특성을 찾고 이를 시각화 하는 방법</li>
 </ul>
+</dd>
+</dl>
+</div>
 <p>우리는 어려서부터 단일 민족이라는 이야기를 많이 들어왔으나 이제는 다문화 가정이라는 것이 보편화되고 있다. 인종간의 차이는 무엇이고 그렇다면 나는 유전적으로 어떤 위치에 있는지에 대해서 알아보도록 하자.</p>
 <div class="section" id="pca">
-<span id="pca"></span><h2>PCA를 이용한 인구집단 표시<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h2>
+<h2>PCA를 이용한 인구집단 표시<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h2>
 <p>어느 조상으로부터 유래 되었는지에 대한 정보력을 가진 AIM 마커는 약 128개 정도로 기존에 인종 정보가 알려진 공개된 데이터로부터 128개의 AIM만을 추출하여 이를 주성분 분석 (Principal Components Analysis, PCA) 기법을 이용하여 그래프를 그리게 된다. PCA는  고차원의 데이터 (128개의 데이터)를 저차원의 데이터(X, Y 축을 가진 2차원 그래프)로 환원시켜 서로간의 연관성을 한눈에 파악할 수 있도록 해준다. 아래 그림은 각 개인의 AIM을 추출하고 이를 2차원 그래프에 투영한 것으로 같은 인종끼리 모아지는 형태를 확인할 수 있다. 이렇게 기본이 되는 그래프 위에 자신의 PCA 값을 계산하여 그래프에 찍어 주면 자신이 어느 위치에 존재하는지를 확인 할 수가 있다.</p>
 </div>
-<div class="section" id="">
-<span id="id2"></span><h2>인구집단 데이터<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h2>인구집단 데이터<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>지금까지 공개된 인구집단의 데이터는 HapMap또는 HGDP를 통해 공개된 인종별 인구집단 데이터가 존재한다. 최근에는 NGS를 통해 생산된 인구집단 데이터인 1000 Genomes Project 데이터 또한 존재한다. 여기서는 1000 Genomes Project에서 공개된 3개의 인구집단 데이터를 이용한다. 3개의 그룹은 CEU(북유럽 조상을 둔 미국 유타 지역 주민), YRI(나이지리아의 이바단에 거주하는  요루바족), CHB/JPT (중국 한족/토교에 거주하는 일본인) 그룹으로 크게 유럽인, 아프리카인, 아시아인을 대표한다고 보면 되겠다.</p>
 <p>공개된 YRI 인종의 유전체정보가 담겨진 VCF 파일을 다운로드한다. 이때 .tbi 확장자를 가진 파일을 같이 다운로드하는데 이 파일은 tabix라는 툴이 사용하는 인덱스 파일로 파일 크기가 큰 유전체 데이터셋에서 원하는 지역을 빠르게 찾을 수 있도록 도와준다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">urllib</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">urllib</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">URLopener</span><span class="p">()</span>
 <span class="n">u</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="s2">&quot;ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/pilot_data/paper_data_sets/a_map_of_human_variation/low_coverage/snps/YRI.low_coverage.2010_09.genotypes.vcf.gz&quot;</span><span class="p">,</span> <span class="s2">&quot;YRI.low_coverage.2010_09.genotypes.vcf.gz&quot;</span><span class="p">)</span>
 <span class="n">u</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="s2">&quot;ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/pilot_data/paper_data_sets/a_map_of_human_variation/low_coverage/snps/YRI.low_coverage.2010_09.genotypes.vcf.gz.tbi&quot;</span><span class="p">,</span> <span class="s2">&quot;YRI.low_coverage.2010_09.genotypes.vcf.gz.tbi&quot;</span><span class="p">)</span>
@@ -186,14 +192,14 @@
 <p>유전체 데이터에서 좌표 (coordiantes)는 기본적으로 0-베이스를 기준으로 한다. 즉 시퀀스의 첫번째 기준 점은 0과 1사이에 존재한다. 기본적으로 0-베이스와 1-베이스의 차이는 아래와 같다. 우리가 4번째에 존재하는 ‘G’는 1-베이스 기반에서의 위치는 1이지만 제로-베이스에서는 3-4가 된다.</p>
 <p>23andMe의 데이터는 1-베이스 좌표를 이용하게 되는데 23andMe의 첫번째 나오는 rs3094315의 경우 위치가 742429이지만, 우리가 지금 사용하는 VCF 포맷은 0-베이스를 사용하기 때문에 742428-742429가 된다. 해당 지역에 대해서 검색한 결과를 보면 처음의 5개는 각각 염색체 번호,  위치, 마커 이름, 표준 베이스, 변이 베이스의 순서로 염색체1번의 742429번째 염기는 ‘G’ 이지만 사람들은 ‘A’도 가지고 있다는 의미이다.</p>
 <p>10번째 컬럼부터는 실제 개인별 지노타입 정보를 0과 1로 표현한 것으로 0은 레퍼런스 염기를 1은 변이 염기를 의미한다. 따라서 첫번째 사람은 ‘0|1’ 즉 ‘GA’, 두번째 사람은 ‘1|1’ 즉 ‘AA’ 지노타입을 가지고 있다는 의미이다. YRI인 총 59명에 대한 지노타입 정보가 담겨져 있다는 것을 알 수 있다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rs3094315</span> <span class="o">=</span> <span class="n">yri</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="mi">742428</span><span class="p">,</span> <span class="mi">742429</span><span class="p">)</span> 
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rs3094315</span> <span class="o">=</span> <span class="n">yri</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="mi">742428</span><span class="p">,</span> <span class="mi">742429</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">rs3094315</span><span class="o">.</span><span class="n">next</span><span class="p">())</span>
 
 <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;742429&#39;</span><span class="p">,</span> <span class="s1">&#39;rs3094315&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;PASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AA=g;AC=46;AN=118;DP=237;HM2;GP=1:752566;BN=103&#39;</span><span class="p">,</span> <span class="s1">&#39;GT:DP:CB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:3:SM&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:4:MB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:5:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:6:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:7:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:0:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:12:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:4:MB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:7:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:6:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:5:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:5:MB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:6:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:5:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:1:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:9:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:1:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:10:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:9:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:9:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:8:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:9:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:5:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:3:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:0:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:7:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:3:SM&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:0:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:9:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|1:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:1:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:1:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:1:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:3:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:4:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;0|0:0:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:2:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|1:3:SMB&#39;</span><span class="p">,</span> <span class="s1">&#39;1|0:4:SMB&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>VCF파일과 달리23andMe 포맷은 실제 지노타입이 표시되어 있기 때문에 23andMe의 지노타입 표시 형태를 1000 Genomes Project의 지노타입 표현 형태인 0과 1로 변경해야 한다. 파이썬의 데이터프레임 형태로 23andMe 데이터를 불러들인다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="n">anon</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s2">&quot;../genome_Hong_ChangBum_Full_20100816082459.txt&quot;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The 23andMe datset has </span><span class="si">{}</span><span class="s2"> rows and </span><span class="si">{}</span><span class="s2"> columns.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">anon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
@@ -205,29 +211,17 @@
 <span class="mi">1</span>  <span class="n">rs12562034</span>  <span class="mi">1</span>   <span class="mi">758311</span>  <span class="n">GG</span>
 <span class="mi">2</span>   <span class="n">rs3934834</span>  <span class="mi">1</span>   <span class="mi">995669</span>  <span class="n">CC</span>
 <span class="mi">3</span>   <span class="n">rs9442372</span>  <span class="mi">1</span>  <span class="mi">1008567</span>  <span class="n">GG</span>
-<span class="mi">4</span>   <span class="n">rs3737728</span>  <span class="mi">1</span>  <span class="mi">1011278</span>  <span class="n">GG</span> 
+<span class="mi">4</span>   <span class="n">rs3737728</span>  <span class="mi">1</span>  <span class="mi">1011278</span>  <span class="n">GG</span>
 </pre></div>
 </div>
 <p>23andMe의 데이터는 약 57만개의 지노타입 정보가 포함되어 있는데 우리는 이중에서 1000개의 지노타입 정보만을 이용한다. 데이터프레임의 각 컬럼의 이름을 변경한다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">anon</span> <span class="o">=</span> <span class="n">anon</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1000</span><span class="p">,:]</span>
-<span class="n">anon</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rsid&quot;</span><span class="p">,</span> <span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">,</span> <span class="s2">&quot;genotype&quot;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">anon</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-
-<span class="n">rsid</span> <span class="n">chrom</span>      <span class="n">pos</span> <span class="n">genotype</span>
-<span class="mi">0</span>   <span class="n">rs3094315</span>     <span class="mi">1</span>   <span class="mi">742429</span>       <span class="n">AA</span>
-<span class="mi">1</span>  <span class="n">rs12562034</span>     <span class="mi">1</span>   <span class="mi">758311</span>       <span class="n">GG</span>
-<span class="mi">2</span>   <span class="n">rs3934834</span>     <span class="mi">1</span>   <span class="mi">995669</span>       <span class="n">CC</span>
-<span class="mi">3</span>   <span class="n">rs9442372</span>     <span class="mi">1</span>  <span class="mi">1008567</span>       <span class="n">GG</span>
-<span class="mi">4</span>   <span class="n">rs3737728</span>     <span class="mi">1</span>  <span class="mi">1011278</span>       <span class="n">GG</span>
-</pre></div>
-</div>
 <p>23andMe의 지노타입을 1000 Genomes Project의 지노타입으로 변환하기 convert_anon_genotype 함수를 작성한다. 23andMe의 지노타입의 위치정보와 일치하는 지노타입 정보를 1000 Genome Project에서 찾아 레퍼런스 염기와 변이염기를 ref, alt로 각각 지정한 후 23andMe의 지노타입이 3가지 지노타입 중 어떠한 형태인지를 확인하여 ‘0|0’, ‘0|1’, ‘1|1’ 중 하나를 반환한다. 23andMe의 데이터의 지노타입에서 사용하는 염기(A, C, G, T)외에도 다른 형태의 데이터가 존재하는데 해당 염기가 존재하지 않거나 다른 염기가 1개 이상 더 추가되는 형태인 deletion과 insertion, 그리고 해당 염기를 읽는 것에 실패한 missing genotype도 존재한다. 이들은 23andMe에서 I, D, -로 표시하게 되는데 이러한 것들에 대해서는 별도의 처리가 필요하지만 여기서는 ‘0|0’ 즉 레퍼런스 염기와 같은 것으로 간주하고 처리한다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">convert_anon_genotype</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">vcf_tabix</span><span class="p">):</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">convert_anon_genotype</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">vcf_tabix</span><span class="p">):</span>
     <span class="n">site</span> <span class="o">=</span> <span class="n">vcf_tabix</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">next</span><span class="p">()</span> 
+        <span class="n">row</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span> 
+        <span class="k">return</span> <span class="kc">None</span>
     <span class="n">ref</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">alt</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">genotype</span> <span class="o">==</span> <span class="n">ref</span><span class="o">+</span><span class="n">ref</span><span class="p">:</span>
@@ -236,12 +230,12 @@
         <span class="k">return</span><span class="p">(</span><span class="s2">&quot;0|1&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">genotype</span> <span class="o">==</span> <span class="n">alt</span><span class="o">+</span><span class="n">alt</span><span class="p">:</span>
         <span class="k">return</span><span class="p">(</span><span class="s2">&quot;1|1&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span> 
+    <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span><span class="p">(</span><span class="s2">&quot;0|0&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>함수 작성이 끝났으면 23andMe 데이터가 저장된 anon 데이터프레임의 염색체, 위치, 지노타입 정보를 zip함수를 이용해 묶어준 후 지노타입 표현 방식을 변경하여 genotypes_1kg_format이라는 리스트에 저장한다. 변경된 지노타입은 genotype_1kg_format이라는 컬럼 이름으로 anon 데이터프레임에 추가한다. 최종적으로 우리는 2가지 형식의 지노타입을 모두 가지게 되었다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">genotypes_1kg_format</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">genotypes_1kg_format</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">genotype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">anon</span><span class="p">[</span><span class="s1">&#39;chrom&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;genotype&#39;</span><span class="p">]):</span>
     <span class="n">genotypes_1kg_format</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">convert_anon_genotype</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span> <span class="n">pos</span><span class="p">,</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">yri</span><span class="p">))</span>
 
@@ -259,11 +253,11 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="">
-<span id="id3"></span><h2>참조 인구집단 데이터셋 만들기<a class="headerlink" href="#" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>참조 인구집단 데이터셋 만들기<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>유전자 데이터로부터 조상을 예측하기 위해서 행별로 샘플의 정보와 각 컬럼에는 각 염색체의 특정 위치에서의 지노타입을 표시한 데이터 프레임을 만들 것이다. 각 샘플들은 인구집단을 구분하기 위한 컬럼과 샘플을 각각 구분하기 위한 컬럼을 가진다.</p>
 <p>각 행별로 YRI 59샘플의 정보를 가지는 데이터프레임을 만든다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yri_genotypes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;YRI&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">60</span><span class="p">)],</span> <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="s2">&quot;YRI&quot;</span><span class="p">})</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yri_genotypes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;YRI&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">60</span><span class="p">)],</span> <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="s2">&quot;YRI&quot;</span><span class="p">})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">yri_genotypes</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 <span class="n">population</span> <span class="n">sample</span>
 <span class="mi">0</span>        <span class="n">YRI</span>   <span class="n">YRI1</span>
@@ -274,14 +268,13 @@
 </pre></div>
 </div>
 <p>각 샘플의 지노타입을 얻기 위해 tabix를 이용하여 1000개의 마커를 1000 Genomes Project에서 선택하는 함수를 작성한다. 마커에 대한 정보가 없는 샘플의 경우에는 None을 리턴하고 존재하는 경우에는 해당 지노타입을 리턴한다. None으로 지정된 열은 23andMe에는 데이터가 존재하지만 YRI 데이터에서는 존재하지 않는 것으로 나중에 데이터가 누락된 곳은 삭제한다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-<span class="k">def</span> <span class="nf">extract_genotype</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">vcf_tabix</span><span class="p">):</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">extract_genotype</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">vcf_tabix</span><span class="p">):</span>
     <span class="n">site</span> <span class="o">=</span> <span class="n">vcf_tabix</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">next</span><span class="p">()[</span><span class="mi">9</span><span class="p">:]</span>
     <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span> 
-    <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">g</span><span class="p">]</span> 
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">g</span><span class="p">]</span>
     <span class="k">return</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">rsid</span><span class="p">,</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">anon</span><span class="p">[</span><span class="s1">&#39;rsid&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;chrom&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">]):</span>
@@ -304,7 +297,7 @@
 </pre></div>
 </div>
 <p>YRI와 마찬가지로 CEU와 CHB/JPT 인종에 대한 정보도 ceu_genoytpes, chbjpt라는 이름으로 데이터프레임으로 만든다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 유럽인에 대한 지노타입 데이터 추가</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 유럽인에 대한 지노타입 데이터 추가</span>
 <span class="n">CEU_file</span> <span class="o">=</span> <span class="s2">&quot;CEU.low_coverage.2010_09.genotypes.vcf.gz&quot;</span>
 <span class="n">ceu</span> <span class="o">=</span> <span class="n">tabix</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">CEU_file</span><span class="p">)</span>
 
@@ -329,7 +322,7 @@
 </pre></div>
 </div>
 <p>각각 인종별로 만들어진 3개의 데이터프레임을 genotypes라는 하나의 데이터 프레임으로 통합한다. 총 3개의 인종의 179명에 대한 1000개의 지노타입 정보가 들어있는 데이터 프레임을 얻을 수 있다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">genotypes</span> <span class="o">=</span> <span class="n">yri_genotypes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">genotypes</span> <span class="o">=</span> <span class="n">yri_genotypes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">genotypes</span> <span class="o">=</span> <span class="n">genotypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ceu_genotypes</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">genotypes</span> <span class="o">=</span> <span class="n">genotypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chbjpt_genotypes</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -339,13 +332,13 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="pca">
-<span id="id4"></span><h2>PCA를 이용한 클러스터링<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>PCA를 이용한 클러스터링<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>이제 우리는 3개의 인종의 179명 데이터를 포함한 나의 데이터를 이용하여 PCA를 사용하여 샘플간의 차이를 시각화 하려고 한다. 우리는 PCA를 위해 scikit-learn 라이브러리를 사용할 것이다. 우리는 지노타입 정보를 연속적인 값으로 변환하는데 지노타입이 레퍼런스와 동일한 경우 1, 하나만 레퍼런스와 일치하는 경우 0.5, 레퍼런스와 지노타입이 둘다 일치하지 않는 경우 0으로 변환한다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="k">import</span> <span class="n">PCA</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="k">import</span> <span class="n">PCA</span>
 <span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
 
-<span class="n">genotypes_only</span> <span class="o">=</span> <span class="n">genotypes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span>  
+<span class="n">genotypes_only</span> <span class="o">=</span> <span class="n">genotypes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span>
 <span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;1|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;0|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;0/1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
@@ -371,7 +364,7 @@
 </div>
 <p>23andMe에서 제공하는 데이터 중 일부인 1000개 미만의 지노타입정보만으로도 3개의 명확한 클러스터로 구분된 것을 확인 할 수 있다. 이 3개의 클러스터는 각 인구집단의 정보를 추가하면 3개의 인구집단을 대표한다는 것을 확인할 수 있다. PCA의 강점 중 하나는 분석을 위해서 K-means 분석처럼 별도의 클러스터의 수를 지정할 필요가 없다는 것이다.</p>
 <p>세 그룹은 정확히 인종 정보와 일치하는지를 확인해 본다. 빨간색(r)은 YRI, 파란색(b)은 CEU, 노란색(y)은 CHB/JPT로 표시한다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 
@@ -386,7 +379,7 @@
 </div>
 <p>PCA 그래프를 보면 주성분1(PC1, X축)에서 YRI와 CEU, CHB/JPT가 서로 분리되는 것을 확인 할 수 있다. 이것은 우리 인류의 기원이 아프리카에서 시작하여 이후 유럽 및 아시아로의 이주를 반영하는 것이다. 두번째 주성분에서의 유럽과 아시아가 서로 분리된 것은 각각 유전적 차이를 가지고 이주했음을 시사한다.</p>
 <p>마지막으로 자신의 23andMe 지노타입 데이터에서 1000 Genomes Project에 존재하지 않는 데이터는 제거한 후 PCA를 수행한다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 23andMe 데이터 중 인구집단 샘플들에서 지노타입이 존재하는 마커만 선별한다.</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 23andMe 데이터 중 인구집단 샘플들에서 지노타입이 존재하는 마커만 선별한다.</span>
 <span class="n">anon</span> <span class="o">=</span> <span class="n">anon</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">anon</span><span class="p">[</span><span class="s1">&#39;rsid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">genotypes_only</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="p">:]</span>
 
 <span class="n">anon_genotypes</span> <span class="o">=</span> <span class="n">anon</span><span class="o">.</span><span class="n">copy</span><span class="p">()[</span><span class="s2">&quot;genotype_1kg_format&quot;</span><span class="p">]</span>
@@ -395,13 +388,13 @@
 <span class="n">anon_genotypes</span><span class="p">[</span><span class="n">anon_genotypes</span> <span class="o">==</span> <span class="s2">&quot;0|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="n">anon_genotypes</span><span class="p">[</span><span class="n">anon_genotypes</span> <span class="o">==</span> <span class="s2">&quot;1|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="n">anon_genotypes</span><span class="p">[</span><span class="n">anon_genotypes</span> <span class="o">==</span> <span class="s2">&quot;0|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">anon_genotypes</span> <span class="o">=</span> <span class="n">anon_genotypes</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> 
+<span class="n">anon_genotypes</span> <span class="o">=</span> <span class="n">anon_genotypes</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">anon_pca</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">anon_genotypes</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>기존의 인구집단 그래프를 그리고 23andMe 데이터에 대한 PCA 결과를 그래프에 추가한다.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 
 <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">pop</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="s2">&quot;rgb&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;YRI&quot;</span><span class="p">,</span> <span class="s2">&quot;CEU&quot;</span><span class="p">,</span> <span class="s2">&quot;CHBJPT&quot;</span><span class="p">]):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">pc</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">genotypes</span><span class="p">[</span><span class="s1">&#39;population&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">pop</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pc</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">genotypes</span><span class="p">[</span><span class="s1">&#39;population&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">pop</span><span class="p">),</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">pop</span><span class="p">)</span>
@@ -430,10 +423,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="nipt.html" class="btn btn-neutral float-right" title="제4장 염색체 이상 찾기" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="nipt.html" class="btn btn-neutral float-right" title="염색체 이상 찾기" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="distance.html" class="btn btn-neutral" title="제2장 유전적 거리 측정" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="distance.html" class="btn btn-neutral" title="유전적 거리 측정" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
