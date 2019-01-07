@@ -174,6 +174,7 @@
 <div class="section" id="id2">
 <h2>지노타입간의 유사도 측정<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>둘 혹은 그 이상의 사람간의 지노타입 데이터를 서로 비교하여 유사도를 측정하는 방법은 어떠한 가족 정보도 없는 상태에서 두 사람이 가족관계가 있는지 어느정도 확인 할 수 있다. 얼마나 많은 유사성이 있는지에 대한 것은 많은 방법이 존재하며 가장 널리 사용되는 방법은 IBD (Identity by decent)와 IBS (Identity by state)라는 방법이 존재한다. IBD는 두 사람이 조상 (부모)로부터 어떠한 allele를 물려 받았는지를 통해 서로간의 위치를 확인하는 방법이며, IBS는 두 사람간에 어떠한 allele를 공유하는지를 단순히 말해주게 된다.</p>
+<a class="reference internal image-reference" href="_images/pic201.png"><img alt="IBD vs. IBS" class="align-center" src="_images/pic201.png" style="width: 400px;" /></a>
 <p>첫 번째 라인의 자식들은 각각 아버지로부터 1을 어머니로부터 3을 물려받았다. 따라서 13/13으로 각각 부모로 물려받은 공통 allele의 개수가 2개이므로 IBD 값은 2, 부모를 배제하고 서로간의 13/13 두개의 allele가 같으므로 IBS 값도 2가 된다. 세번째 라인의 경우 13/12 로 서로 같은 1을 가지고 있지만 이는 각각 부/모로부터 따로 받은 것이기 때문에 부모로부터 받은 allele를 서로간에 공유하는 것이 없기 때문에 IBD는 0이지만, 서로간에 1이라는 것을 공유하기 때문에 IBS는 1이 된다.</p>
 <p>이러한 IBD나 IBS를 통해 얻어진 값들은 PCA나 MDS를 통해 분석하게 되면 사람들간의 거리 (유사도)를 한눈에 확인 할 수 있다.</p>
 </div>
@@ -295,6 +296,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">ibd_cal</span><span class="p">[</span><span class="s1">&#39;IBD&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
 </pre></div>
 </div>
+<a class="reference internal image-reference" href="_images/pic202.png"><img alt="아시아인과 유럽인의 IBD 분포" class="align-center" src="_images/pic202.png" style="width: 400px;" /></a>
 <p>위에서 사용한 데이터는 모두 한국인으로 한국인과 타 인종간 비교를 수행해 보면 유럽인과 한국인을 비교한 경우 정확히 일치하는 개수가 줄어들고 그에 따라 모두 일치하지 않는 개수가 늘어나는 것을 확인할 수 있다. 계산된 IBS값은 염색체, 염색체 위치, IBD 값만을 csv 형태로 저장하여 추후 타 코드에서 활용할 수 있도록 한다.</p>
 </div>
 <div class="section" id="id3">
@@ -320,6 +322,7 @@ ibd_chr22 &lt;- subset(ibd, chrom==22
 </div>
 <p>이디오그램과 IBS를 표시할 두개의 트랙을 추가하고 최종적으로 두개의 트랙을 포함하여 그래프를 그린다.</p>
 <p>염색체22번의 이디오그램과 IBD값을 보여준다. 서로 인척관계가 없는 데이터 이므로 0,1,2의 값이 모두 나타나는 것을 확인 할 수 있다. 만약 부-모, 자식간의 샘플이라면 0(불일치)가 나타나지 않을 것이다.</p>
+<a class="reference internal image-reference" href="_images/pic203.png"><img alt="22번 염색체의 IBS" class="align-center" src="_images/pic203.png" style="width: 400px;" /></a>
 <p>10번 염색체에 대해서 아버지와 어머니를 비교 시 0,1,2가 모두 분포하는 반면, 어머니와 아들은 1 즉 반만 물려 받게 된다. 아버지와 아들의 경우도 0이 나타나지 않아야 하는데 화살표로 표시된 부분과 같이 불일치가 나타나는 경우는 hemizygous deletion으로 아버지로부터 해당 부분을 물려받지 못한 경우라고 할 수 있다.</p>
 <p>지금까지 간단하게 두 샘플의 유전적 거리를 측정하는 방법에 대해서 배웠다. 간단한 방법이지만 이 거리 측정 방법을 확장하여 우리는 인종간의 거리나 친인척을 찾는데 이를 활용할 수 있다. 이러한 방법들은 뒤에서 자세히 다룬다.</p>
 </div>
