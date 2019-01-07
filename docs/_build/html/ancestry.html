@@ -1,0 +1,666 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>조상 정보 찾기 &mdash; Book  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="염색체 이상 찾기" href="nipt.html" />
+    <link rel="prev" title="인구 집단 비교" href="population.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Book
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="perface.html">Perface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genome_data.html">유전체 데이터</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distance.html">유전적 거리 측정</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">인구 집단 비교</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">조상 정보 찾기</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">페이징</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">애드믹스처</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">인종별 데이터셋과 페이징</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">인구집단 추정</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">염색체 구간 설정</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#andme">23andMe 데이터 읽기</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">인종별 데이터 읽기</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">트레이닝 데이터 세트 만들기</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">이디오그램 그리기</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nipt.html">염색체 이상 찾기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gwas.html">질병 연관성 분석</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Book</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>조상 정보 찾기</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ancestry.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>조상 정보 찾기<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>이전장에서는 유전적 특성을 PCA를 통해 분석하고 나의 유전적 위치를 표시하는 방법에 대해서 알아보았다. 이번에는 좀 더 세밀하게 나의 유전체 정보를 분석해 보도록 하겠다.</p>
+<p>23andMe의 결과를 보면 필자의 염색체 3번의 대부분의 영역이 일본인으로 나온다. 과연 어떻게 된 일일까? 나의 머나먼 조상 중에 일본인이 있었을 가능성과 나의 조상 중에 일본으로 건너간 사람이 존재할 가능성이다. 하지만 한가지 더 생각해 봐야 할 것은 한국인의 데이터가 부족해서 생기는 결과에 대한 부분이다.</p>
+<a class="reference internal image-reference" href="_images/pic501.png"><img alt="Your ancestry composition chromosome painting" class="align-center" src="_images/pic501.png" style="width: 400px;" /></a>
+<p>기본적으로 나의 유전체 정보를 일정 영역으로 구분하고 해당 정보가 한국인 그룹, 일본인 그룹, 중국인 그룹, 유럽인 그룹 등과 얼마나 유사 한지를 비교하여 해당 영역이 가장 유사한 그룹을 색상으로 표시한 것이다.</p>
+<p>일본인과 유사하다고 나온 부분이 한국인 모집단에도 존재한다면 3번 염색체는 모두 한국인으로 표시 될 수도 있다. 하지만 23andMe의 한국인 모집단은 50명도 채 안되기 때문에 이러한 현상이 나왔을 수도 있다. 이렇듯 자세한 조상 정보는 분석에 사용하는 모집단의 수나 분석 방법에 따라서 다른 결과를 보여줄 수도 있다는 것을 염두에 두어야 할 것이다.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="last docutils">
+<dt>이번 장을 끝마치면 당신은 아래의 3가지에 대해서 배울 수 있다.</dt>
+<dd><ul class="first last simple">
+<li>자신의 지노타입 정보를 부/모에게 각각 물려 받은 정보로 구분하는 페이징 방법</li>
+<li>SVM을 이용하여 유전체 정보를 분류하는 방법</li>
+<li>염색체별로 유전체 정보를 시각화 하는 방법</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="id2">
+<h2>페이징<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>지노타입 데이터가 ‘AG’라고 할 경우 과연 나는 엄마로부터 A를 받았는지 G를 받았는지를 가려낼 수 있을까? 단순히 자신의 지노타입 데이터만 존재하는 경우 아마 어려운 문제가 될 것이다. 하지만 부모의 지노타입을 알고 있는 경우에는 비교적 쉽게 알 수 있다. 아버지가 “AG” 어머니도 “AG”라고 할 경우에는 나의 A는 어머니의 A인지 아버지의 A인지 구분하기가 어렵게 된다. 이렇게 한쌍의 데이터를 서로 다른 두개의 데이터로 분리하는 작업을 페이징(phasing)이라고 한다.</p>
+<p>유전체의 각 부위는 아무렇게나 자식에게 전달되는 것이 아니라 서로 연관되어 하나의 블록 단위로 자식에게 전달된다. 이러한 블록을 하플로타입(haplotype)이라고 하며 일반적으로 집단의 구성원들은 동일한 하플로타입의 패턴을 공유하고하고 있다. 따라서 이러한 하플로타입간의 유사성을 비교하여 각 개인의 유전적인 근원을 이해하는데 사용될 수 있다.</p>
+<p>위의 그림에서도 보듯이 개인의 지노타입 정보를 페이징을 통해서 구분하게 된다. 각 염색체가 2개로 표현된 것은 이렇게 페이징을 통해 구분한 결과를 보여주는 것이다. 일본인이 나온 3번 염색체의 경우 페이징된 2개에서 모두 나온 것이 아니라 1개에서만 일본인의 정보가 확인된 것을 볼 수 있다. 지노타이핑을 통해 얻은 정보가 다음과 같다면, 추측 가능한 페이징 정보는 아래와 같다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">실제</span> <span class="n">아빠로부터</span><span class="p">:</span> <span class="n">A</span><span class="o">-</span><span class="n">T</span><span class="o">-</span><span class="n">C</span>
+<span class="n">실제</span> <span class="n">엄마로부터</span><span class="p">:</span> <span class="n">G</span><span class="o">-</span><span class="n">T</span><span class="o">-</span><span class="n">A</span>
+
+<span class="n">나의</span> <span class="n">지노타입</span><span class="p">:</span> <span class="n">A</span><span class="o">/</span><span class="n">G</span> <span class="n">T</span><span class="o">/</span><span class="n">T</span> <span class="n">A</span><span class="o">/</span><span class="n">C</span>
+
+<span class="n">추측</span> <span class="n">가능한</span> <span class="n">정보</span>
+<span class="n">A</span><span class="o">-</span><span class="n">T</span><span class="o">-</span><span class="n">A</span>
+<span class="n">G</span><span class="o">-</span><span class="n">T</span><span class="o">-</span><span class="n">C</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>애드믹스처<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>모든 DNA가 전세계의 한지역에서만 나온 것이라면 당신이 어디에서 왔는지 쉽고 정확하게 알아낼 수 있다. 하지만 대부분의 사람들은 모든 조상이 한곳에서 나온 것이 아니라 어떤 사람은 조상이 여러 위치 또는 인종이 뒤섞여 있을 수 있다. 원래 유전적으로 분리가 되어 있단 집단이 서로 섞이는 경우에 이러한 것은 애드믹스처(admixture)라고 한다. 일반적으로 라틴계는 아메리카 인디언, 유럽 및 아프리카인의 DNA가 애드믹스처 되어 있다.</p>
+<p>그렇다면 이렇게 페이징 정보도 알 수 없고 애드믹스처 된 개인의 유전체로부터 자신의 조상 정보를 추측할 수 있을까? 충분한 각인종의 데이터셋을 준비하고 지노타입 정보로부터 페이징된 하플로타입을 추정하고 염색체의 특정 윈도우 사이즈로 나눈 후 각 윈도우별로 인종 데이터셋과 비교하여 조상을 찾는 과정을 수행한다.</p>
+</div>
+<div class="section" id="id4">
+<h2>인종별 데이터셋과 페이징<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>HGDP(Human Genome Diveristy Project), HapMap, 1000 Genomes project의 데이터셋은 인구집단 정보와 함께 지노타입 데이터를 제공하고 있다. 따라서 우리의 조상 정보는 위의 모집단 데이터셋에 의존한 데이터이다.</p>
+<p>인종 데이터를 사용하려면 인종마다 페이징된 지노타입 데이터를 사용해야 한다. 페이징 데이터를 제공하지 않는 경우 페이징 정보를 추정하여야 하며 나의 지노타입 데이터 역시 페이징 데이터를 추정해서 사용해야 한다. 페이징을 하는 방법은 실제 부모 데이터를 수행하는 방법은 현실적으로 어려움이 따르기 때문에 많은 통계적인 기법들을 구현한 프로그램을 사용한다.</p>
+<p>가장 널리 사용되는 프로그램 중 하나는 비글(BEAGLE)이라는 프로그램이 사용되며,  23andMe는 비글과 동일한 알고리즘을 사용하는 핀치(Finch)라는 프로그램을 자체적으로 사용하고 있다.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">핀치새는 다윈의 진화론의 상징으로 갈라파고스섬에 살고 있는 핀치새는 먹이와 환경에 따라서 부리 모양이 다르며 최근 최근 연구에 따르면 ‘ALX1’ 유전자가 변형에 따른 것이라고 한다. 이 유전자는 머리 구조를 결정하는 역할을 하며 심하게 변형될 경우 유전병을 일으키는 것으로 알려져 있다.</p>
+</div>
+<p>여기서는 페이징된 지노타입을 사용하여 추정하지 않겠다. 페이징된 지노타입을 사용하게 되면 페이징 정보를 통해 1쌍의 염색체를 각각 분리하여 조상에 대한 정보를 획득할 수 있다. 또 다른 방법은 페이징을 수행하지 않고 지노타입 정보를 모두 사용할 수 있다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">마커1의</span> <span class="n">지노타입</span> <span class="n">AA</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">마커2의</span> <span class="n">지노타입</span> <span class="n">TG</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="n">마커3의</span> <span class="n">지노타입</span> <span class="n">GT</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="n">마커4의</span> <span class="n">지노타입</span> <span class="n">TT</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="n">페이징</span> <span class="n">수행시</span> <span class="mi">2</span><span class="n">개의</span> <span class="n">데이터를</span> <span class="n">각각</span> <span class="n">사용</span>
+<span class="n">A</span><span class="o">-&gt;</span><span class="mi">1</span>
+<span class="n">G</span><span class="o">-&gt;</span><span class="mi">2</span>
+<span class="n">C</span><span class="o">-&gt;</span><span class="mi">3</span>
+<span class="n">T</span><span class="o">-&gt;</span><span class="mi">4</span>
+
+<span class="n">A</span><span class="o">-</span><span class="n">T</span><span class="o">-</span><span class="n">G</span><span class="o">-</span><span class="n">T</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">A</span><span class="o">-</span><span class="n">G</span><span class="o">-</span><span class="n">T</span><span class="o">-</span><span class="n">T</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+
+<span class="n">페이징</span> <span class="n">미수행시</span> <span class="mi">1</span><span class="n">개의</span> <span class="n">데이터를</span> <span class="n">사용</span>
+<span class="n">Alternative</span> <span class="n">Homo</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+<span class="n">Hetero</span> <span class="o">-&gt;</span> <span class="mf">0.5</span>
+<span class="n">Reference</span> <span class="n">Homo</span> <span class="o">-&gt;</span> <span class="mi">0</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>인구집단 추정<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<p>지노타입이 어떠한 레퍼런스 인종과 가장 근접하는지는 지지벡터머신(Support Vector Machine, SVM)을 이용하여 분류한다. 지지벡터머신은 지지벡터(support-vector)를 찾아 이들을 이용해서 구분선을 찾는 알고리즘으로 고차원의 데이터 세트에 잘 작동하며 복잡한 데이터 세트를 다룬 문제들에 자주 적용된다.</p>
+<p>우리는 3개의 레퍼런스 인종에 대해서 학습을 수행한다. 우리가 사용하는 1000 Genomes Project 데이터는 총 179샘플로 YRI 59명, CEU 60명, CHB+JPT 60명으로 총 762개의 마커(총 1,000개중 데이터가 존재하지 않는 마커 제거)로 구성되어 있다.</p>
+<p>첫 번째 리스트는 범주(인종 정보)를 담고 두 번째 리스트는 지노타입 정보를 각각 만든다. 범주는 179명의 샘플을 각각의 인종에 따라서 1, 2, 3의 3가지 범주를 담는다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pop_category</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">179</span><span class="p">):</span>
+    <span class="k">if</span> <span class="mi">0</span><span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">59</span><span class="p">:</span>
+        <span class="c1">#YRI</span>
+        <span class="n">pop_category</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="mi">59</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">119</span><span class="p">:</span>
+        <span class="c1">#CEU</span>
+        <span class="n">pop_category</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="mi">119</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">179</span><span class="p">:</span>
+        <span class="c1">#CHB+JPT</span>
+        <span class="n">pop_category</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pop_category</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>179명의 샘플에 대한 지노타입 정보를 리스트에 담는다. 첫 번째 샘플의 762개 마커에 대한 지노타입 정보를 출력해 본다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>train_data=genotypes_only.apply(lambda x: x.tolist(), axis=1)
+list_td=train_data.values.tolist()
+print(list_td[0])
+[0.5, 0.0, 0.5, 0.5, 1.0, … 0.0, 0.0, 1.0, 0.5]
+</pre></div>
+</div>
+<p>179명의 762개 마커에 대한 데이터 세트가 만들어졌으니 SVM을 이용하여 이 모델을 학습시킨다.</p>
+<p>마지막으로 새로운 범주 즉 나의 지노타입 데이터가 어느 범주에 속하는지 예측을 해 본다. 나의 지노타입 정보를 기반으로 예측한 결과 3번 즉 CHB+JPT 범주에 속하는 것을 확인 할 수 있다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">anon_genotypes</span><span class="p">))</span>
+<span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>지금은 윈도우 사이즈에 상관없이 총 762개의 마커만을 사용했지만 적당히 윈도우에 해당하는 마커만으로 각 윈도우별로 인종을 예측하면 된다.</p>
+</div>
+<div class="section" id="id6">
+<h2>염색체 구간 설정<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<p>각 염색체를 일정한 윈도우 사이즈로 나눈다. 특별히 정해진 윈도우 사이즈는 없지만 23andMe 데이터의 경우 보통 염색체당 5,000~4,000개의 마커가 존재하기 때문에 마커 100개를 윈도우 사이즈로 지정하면  염색체의 길이 마다 다르겠지만 50~400개의 윈도우가 만들어진다.</p>
+<p>우선 염색체별로 길이를 알아내기 위해서 표준 레퍼런스에서 제공하는 염색체 길이 데이터를 다운로드 한다. bedtools의 makewindows 명령어를 이용하여 600,000 bp의 길이로 각 염색체를 나누고 이를 bins 파일에 저장한다. 여기서는 모든 염색체에 대해서 실행하는 경우 시간이 많이 소요되므로 18번 염색체만을 대상으로 진행한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes
+$ bedtools makewindows -g hg19.chrom.sizes -w 600000 &gt; bins
+$ cat bins | grep –P “chr18\t” &gt; chr18.bins
+$ cat chr18.bins
+chr18   0       600000
+chr18   600000  1200000
+chr18   1200000 1800000
+chr18   1800000 2400000
+chr18   2400000 3000000
+chr18   3000000 3600000
+chr18   3600000 4200000
+</pre></div>
+</div>
+<p>18번 염색체의 bin 사이즈별 시작 위치와 끝 위치를 데이터프레임에 저장한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chr_18_bins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s2">&quot;chr18.bins&quot;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">chr_18_bins</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;chrom&#39;</span><span class="p">,</span><span class="s1">&#39;start&#39;</span><span class="p">,</span><span class="s1">&#39;end&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="andme">
+<h2>23andMe 데이터 읽기<a class="headerlink" href="#andme" title="Permalink to this headline">¶</a></h2>
+<p>23andMe 데이터를 읽어 지노타입 데이터를 vcf 형태의 지노타입으로 변경한다. 이때 앞서 언급한바와 같이 18번 염색체만을 선택한다. 만일 이 부분을 제외하고 전체 염색체를 대상으로 진행하게 되면 시간이 좀 걸리게 된다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">anon</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s2">&quot;genome_Hong_ChangBum_Full_20100816082459.txt&quot;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">anon</span><span class="o">=</span><span class="n">anon</span><span class="p">[</span><span class="n">anon</span><span class="p">[</span><span class="s1">&#39;chrom&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">18</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">tabix</span>
+
+<span class="n">YRI_file</span> <span class="o">=</span> <span class="s2">&quot;YRI.low_coverage.2010_09.genotypes.vcf.gz&quot;</span>
+<span class="n">yri</span> <span class="o">=</span> <span class="n">tabix</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">YRI_file</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">convert_anon_genotype</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">vcf_tabix</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">chrom</span><span class="o">==</span><span class="s2">&quot;MT&quot;</span> <span class="ow">or</span> <span class="n">chrom</span><span class="o">==</span><span class="s2">&quot;Y&quot;</span> <span class="ow">or</span> <span class="n">chrom</span><span class="o">==</span><span class="s2">&quot;X&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">vcf_tabix</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">alt</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="c1">#print(&quot;%s%s&quot;%(ref,alt))</span>
+    <span class="c1">#print(&quot;%s&quot;%(genotype))</span>
+    <span class="c1">#print(&quot;=======&quot;)</span>
+    <span class="k">if</span> <span class="n">genotype</span> <span class="o">==</span> <span class="n">ref</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">+</span><span class="n">ref</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;0|0&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">genotype</span> <span class="o">==</span> <span class="n">ref</span><span class="o">+</span><span class="n">alt</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">genotype</span> <span class="o">==</span> <span class="n">alt</span><span class="o">+</span><span class="n">ref</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;0|1&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">genotype</span> <span class="o">==</span> <span class="n">alt</span><span class="o">+</span><span class="n">alt</span><span class="p">:</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;1|1&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># missing genotype, or incorrect annotation, we assume ref/ref</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;0|0&quot;</span><span class="p">)</span>
+
+<span class="n">genotypes_1kg_format</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">genotype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">anon</span><span class="p">[</span><span class="s1">&#39;chrom&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;genotype&#39;</span><span class="p">]):</span>
+    <span class="n">genotypes_1kg_format</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">convert_anon_genotype</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span> <span class="n">pos</span><span class="p">,</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">yri</span><span class="p">))</span>
+
+<span class="n">anon</span><span class="p">[</span><span class="s1">&#39;genotype_1kg_format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">genotypes_1kg_format</span>
+</pre></div>
+</div>
+<p>1000 Genomes Project에 23andMe의 데이터가 존재하는 것들은 제거한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">anon</span><span class="o">=</span><span class="n">anon</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">anon</span><span class="p">[</span><span class="s1">&#39;genotype_1kg_format&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>인종별 데이터 읽기<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<p>YRI 인구집단의 지노타입 데이터를 읽어 들인다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">extract_genotype</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">vcf_tabix</span><span class="p">):</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">vcf_tabix</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">site</span><span class="o">.</span><span class="n">next</span><span class="p">()[</span><span class="mi">9</span><span class="p">:]</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="c1"># put None in the dataframe if we are missing this genotype in 1000 Genomes</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">g</span><span class="p">]</span>  <span class="c1"># if present in 1000 genomes, get the genotypes</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">rsid</span><span class="p">,</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">anon</span><span class="p">[</span><span class="s1">&#39;rsid&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;chrom&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">]):</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">extract_genotype</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span> <span class="n">pos</span><span class="p">,</span> <span class="n">yri</span><span class="p">)</span>
+    <span class="n">yri_genotypes</span><span class="p">[</span><span class="n">rsid</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span>
+</pre></div>
+</div>
+<p>CEU와 CHBJPT 인구집단의 샘플 목록을 작성한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CEU_file</span> <span class="o">=</span> <span class="s2">&quot;CEU.low_coverage.2010_09.genotypes.vcf.gz&quot;</span>
+<span class="n">ceu</span> <span class="o">=</span> <span class="n">tabix</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">CEU_file</span><span class="p">)</span>
+<span class="n">number_ceu_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ceu</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="mi">742428</span><span class="p">,</span> <span class="mi">742429</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()[</span><span class="mi">9</span><span class="p">:])</span>
+<span class="n">ceu_genotypes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;CEU&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_ceu_samples</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)],</span> <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="s2">&quot;CEU&quot;</span><span class="p">})</span>
+
+<span class="n">CHBJPT_file</span> <span class="o">=</span> <span class="s2">&quot;CHBJPT.low_coverage.2010_09.genotypes.vcf.gz&quot;</span>
+<span class="n">chbjpt</span> <span class="o">=</span> <span class="n">tabix</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">CHBJPT_file</span><span class="p">)</span>
+<span class="n">number_chbjpt_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chbjpt</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="mi">742428</span><span class="p">,</span> <span class="mi">742429</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()[</span><span class="mi">9</span><span class="p">:])</span>
+<span class="n">chbjpt_genotypes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;CHBJPT&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_chbjpt_samples</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)],</span> <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="s2">&quot;CHBJPT&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>CEU와 CHBJPT 인구집단의 지노타입 데이터를 읽어 들인다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">rsid</span><span class="p">,</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">anon</span><span class="p">[</span><span class="s1">&#39;rsid&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;chrom&#39;</span><span class="p">],</span> <span class="n">anon</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">]):</span>
+    <span class="n">ceu_genotypes</span><span class="p">[</span><span class="n">rsid</span><span class="p">]</span> <span class="o">=</span>  <span class="n">extract_genotype</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ceu</span><span class="p">)</span>
+    <span class="n">chbjpt_genotypes</span><span class="p">[</span><span class="n">rsid</span><span class="p">]</span> <span class="o">=</span>  <span class="n">extract_genotype</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span> <span class="n">pos</span><span class="p">,</span> <span class="n">chbjpt</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>3개 인구집단의 지노타입 데이터를 genotype 데이터프레임에 합친다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">genotypes</span> <span class="o">=</span> <span class="n">yri_genotypes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">genotypes</span> <span class="o">=</span> <span class="n">genotypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ceu_genotypes</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">genotypes</span> <span class="o">=</span> <span class="n">genotypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chbjpt_genotypes</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Now the genotypes data frame has </span><span class="si">{}</span><span class="s2"> samples and </span><span class="si">{}</span><span class="s2"> genotypes&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">genotypes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">genotypes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">Now</span> <span class="n">the</span> <span class="n">genotypes</span> <span class="n">data</span> <span class="n">frame</span> <span class="n">has</span> <span class="mi">179</span> <span class="n">samples</span> <span class="ow">and</span> <span class="mi">16962</span> <span class="n">genotypes</span>
+</pre></div>
+</div>
+<p>지노타입 데이터를 0, 0.5, 1로 변환한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">genotypes_only</span> <span class="o">=</span> <span class="n">genotypes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span>
+<span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;1|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;0|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;0/1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;1|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;0|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+</pre></div>
+</div>
+<p>인구집단 정보에 대한 리스트를 생성한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">category_only</span> <span class="o">=</span> <span class="n">genotypes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">category_only</span><span class="p">[</span><span class="n">category_only</span> <span class="o">==</span> <span class="s2">&quot;YRI&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">category_only</span><span class="p">[</span><span class="n">category_only</span> <span class="o">==</span> <span class="s2">&quot;CEU&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">category_only</span><span class="p">[</span><span class="n">category_only</span> <span class="o">==</span> <span class="s2">&quot;CHBJPT&quot;</span><span class="p">]</span> <span class="o">=</span><span class="mi">3</span>
+
+<span class="n">pop_cat</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">category_only</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id8">
+<h2>트레이닝 데이터 세트 만들기<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<p>인구집단별 트레이닝 데이터 세트를 작성한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">extract_genotypes</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">vcf_tabix</span><span class="p">):</span>
+    <span class="n">g</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">p</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="n">vcf_tabix</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="mi">9</span><span class="p">:]</span>
+            <span class="n">b</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">b</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">snplist</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">])</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g</span><span class="p">,</span><span class="n">p</span>
+
+<span class="k">def</span> <span class="nf">bin_chr</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+  <span class="c1">#YRI</span>
+  <span class="n">g</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="n">extract_genotypes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chrom</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">yri</span><span class="p">)</span>
+  <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+  <span class="n">df</span><span class="p">[</span><span class="n">df</span> <span class="o">==</span> <span class="s2">&quot;1|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">df</span><span class="p">[</span><span class="n">df</span> <span class="o">==</span> <span class="s2">&quot;0|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df</span><span class="p">[</span><span class="n">df</span> <span class="o">==</span> <span class="s2">&quot;1|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df</span><span class="p">[</span><span class="n">df</span> <span class="o">==</span> <span class="s2">&quot;1/0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df</span><span class="p">[</span><span class="n">df</span> <span class="o">==</span> <span class="s2">&quot;0/1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df</span><span class="p">[</span><span class="n">df</span> <span class="o">==</span> <span class="s2">&quot;0|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">T</span>
+  <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="n">p</span>
+
+  <span class="c1">#23andme</span>
+  <span class="n">a</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+  <span class="n">my_data</span><span class="o">=</span><span class="n">anon</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">anon</span><span class="p">[</span><span class="s1">&#39;rsid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span>
+  <span class="n">my_data</span><span class="o">=</span><span class="n">my_data</span><span class="p">[[</span><span class="s1">&#39;genotype_1kg_format&#39;</span><span class="p">]]</span>
+  <span class="n">genotypes_only</span><span class="o">=</span><span class="n">my_data</span><span class="o">.</span><span class="n">T</span>
+  <span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;1|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;0|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;0/1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;1|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">genotypes_only</span><span class="p">[</span><span class="n">genotypes_only</span> <span class="o">==</span> <span class="s2">&quot;0|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+  <span class="n">my_gene</span><span class="o">=</span><span class="n">genotypes_only</span><span class="p">[</span><span class="mi">0</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+  <span class="c1">#CEU</span>
+  <span class="n">g</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="n">extract_genotypes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chrom</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">ceu</span><span class="p">)</span>
+  <span class="n">df_ceu</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+  <span class="n">df_ceu</span><span class="p">[</span><span class="n">df_ceu</span> <span class="o">==</span> <span class="s2">&quot;1|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">df_ceu</span><span class="p">[</span><span class="n">df_ceu</span> <span class="o">==</span> <span class="s2">&quot;0|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_ceu</span><span class="p">[</span><span class="n">df_ceu</span> <span class="o">==</span> <span class="s2">&quot;1|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_ceu</span><span class="p">[</span><span class="n">df_ceu</span> <span class="o">==</span> <span class="s2">&quot;1/0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_ceu</span><span class="p">[</span><span class="n">df_ceu</span> <span class="o">==</span> <span class="s2">&quot;0/1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_ceu</span><span class="p">[</span><span class="n">df_ceu</span> <span class="o">==</span> <span class="s2">&quot;0|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_ceu</span><span class="o">=</span><span class="n">df_ceu</span><span class="o">.</span><span class="n">T</span>
+  <span class="n">df_ceu</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="n">p</span>
+
+  <span class="c1">#CHBJPT</span>
+  <span class="n">g</span><span class="p">,</span><span class="n">p</span> <span class="o">=</span> <span class="n">extract_genotypes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chrom</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;chr&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">chbjpt</span><span class="p">)</span>
+  <span class="n">df_chbjpt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+  <span class="n">df_chbjpt</span><span class="p">[</span><span class="n">df_chbjpt</span> <span class="o">==</span> <span class="s2">&quot;1|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">df_chbjpt</span><span class="p">[</span><span class="n">df_chbjpt</span> <span class="o">==</span> <span class="s2">&quot;0|1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_chbjpt</span><span class="p">[</span><span class="n">df_chbjpt</span> <span class="o">==</span> <span class="s2">&quot;1|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_chbjpt</span><span class="p">[</span><span class="n">df_chbjpt</span> <span class="o">==</span> <span class="s2">&quot;1/0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_chbjpt</span><span class="p">[</span><span class="n">df_chbjpt</span> <span class="o">==</span> <span class="s2">&quot;0/1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_chbjpt</span><span class="p">[</span><span class="n">df_chbjpt</span> <span class="o">==</span> <span class="s2">&quot;0|0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+  <span class="n">df_chbjpt</span><span class="o">=</span><span class="n">df_chbjpt</span><span class="o">.</span><span class="n">T</span>
+  <span class="n">df_chbjpt</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="n">p</span>
+
+  <span class="n">merged_pd</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span><span class="n">df_ceu</span><span class="p">,</span><span class="n">df_chbjpt</span><span class="p">])</span>
+  <span class="n">merged_pd</span><span class="o">=</span><span class="n">merged_pd</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+  <span class="n">t_data</span><span class="o">=</span><span class="n">merged_pd</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+  <span class="n">list_train</span><span class="o">=</span><span class="n">t_data</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+  <span class="n">j</span><span class="o">=</span><span class="p">[]</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">179</span><span class="p">):</span>
+      <span class="k">if</span> <span class="mi">0</span><span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">59</span><span class="p">:</span>
+          <span class="n">j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="mi">59</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">119</span><span class="p">:</span>
+          <span class="n">j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="mi">119</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">179</span><span class="p">:</span>
+          <span class="n">j</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">list_train</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+  <span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="k">import</span> <span class="n">SVC</span>
+  <span class="n">model</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">list_train</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+  <span class="n">prediction_ancestry</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">my_gene</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">prediction_ancestry</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+  <span class="k">if</span> <span class="n">prediction_ancestry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s1">&#39;yri&#39;</span>
+  <span class="k">elif</span> <span class="n">prediction_ancestry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s1">&#39;ceu&#39;</span>
+  <span class="k">elif</span> <span class="n">prediction_ancestry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s1">&#39;chbjpt&#39;</span>
+</pre></div>
+</div>
+<p>염색체번호와 위치를 입력하면 해당 영역에 대한 인구집단 SVM 결과를 반환한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">bin_chr</span><span class="p">(</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">62400000</span><span class="p">,</span> <span class="mi">63000000</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">chr18</span> <span class="mi">62400000</span> <span class="mi">63000000</span>
+<span class="mi">2</span>
+<span class="n">ceu</span>
+</pre></div>
+</div>
+<p>염색체의 bin 구간별로 bin_chr 함수를 실행한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prediction</span><span class="o">=</span><span class="p">[]</span>
+
+<span class="n">chr_18_bins</span><span class="p">[:</span><span class="mi">5</span><span class="p">][</span><span class="s1">&#39;end&#39;</span><span class="p">]):</span>
+<span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">chr_18_bins</span><span class="p">[</span><span class="s1">&#39;chrom&#39;</span><span class="p">],</span> <span class="n">chr_18_bins</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span> <span class="n">chr_18_bins</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]):</span>
+    <span class="n">p</span><span class="o">=</span><span class="n">bin_chr</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+    <span class="n">prediction</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">chrom</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">,</span><span class="n">p</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
+<span class="p">[[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">600000</span><span class="p">,</span> <span class="mi">1200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">1200000</span><span class="p">,</span> <span class="mi">1800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">1800000</span><span class="p">,</span> <span class="mi">2400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">2400000</span><span class="p">,</span> <span class="mi">3000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">3000000</span><span class="p">,</span> <span class="mi">3600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">3600000</span><span class="p">,</span> <span class="mi">4200000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">4200000</span><span class="p">,</span> <span class="mi">4800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">4800000</span><span class="p">,</span> <span class="mi">5400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">5400000</span><span class="p">,</span> <span class="mi">6000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">6000000</span><span class="p">,</span> <span class="mi">6600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">6600000</span><span class="p">,</span> <span class="mi">7200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">7200000</span><span class="p">,</span> <span class="mi">7800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">7800000</span><span class="p">,</span> <span class="mi">8400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">8400000</span><span class="p">,</span> <span class="mi">9000000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">9000000</span><span class="p">,</span> <span class="mi">9600000</span><span class="p">,</span> <span class="s1">&#39;yri&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">9600000</span><span class="p">,</span> <span class="mi">10200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">10200000</span><span class="p">,</span> <span class="mi">10800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">10800000</span><span class="p">,</span> <span class="mi">11400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">11400000</span><span class="p">,</span> <span class="mi">12000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">12000000</span><span class="p">,</span> <span class="mi">12600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">12600000</span><span class="p">,</span> <span class="mi">13200000</span><span class="p">,</span> <span class="s1">&#39;yri&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">13200000</span><span class="p">,</span> <span class="mi">13800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">13800000</span><span class="p">,</span> <span class="mi">14400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">14400000</span><span class="p">,</span> <span class="mi">15000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">15000000</span><span class="p">,</span> <span class="mi">15600000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">15600000</span><span class="p">,</span> <span class="mi">16200000</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">16200000</span><span class="p">,</span> <span class="mi">16800000</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">16800000</span><span class="p">,</span> <span class="mi">17400000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">17400000</span><span class="p">,</span> <span class="mi">18000000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">18000000</span><span class="p">,</span> <span class="mi">18600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">18600000</span><span class="p">,</span> <span class="mi">19200000</span><span class="p">,</span> <span class="s1">&#39;yri&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">19200000</span><span class="p">,</span> <span class="mi">19800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">19800000</span><span class="p">,</span> <span class="mi">20400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">20400000</span><span class="p">,</span> <span class="mi">21000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">21000000</span><span class="p">,</span> <span class="mi">21600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">21600000</span><span class="p">,</span> <span class="mi">22200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">22200000</span><span class="p">,</span> <span class="mi">22800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">22800000</span><span class="p">,</span> <span class="mi">23400000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">23400000</span><span class="p">,</span> <span class="mi">24000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">24000000</span><span class="p">,</span> <span class="mi">24600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">24600000</span><span class="p">,</span> <span class="mi">25200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">25200000</span><span class="p">,</span> <span class="mi">25800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">25800000</span><span class="p">,</span> <span class="mi">26400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">26400000</span><span class="p">,</span> <span class="mi">27000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">27000000</span><span class="p">,</span> <span class="mi">27600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">27600000</span><span class="p">,</span> <span class="mi">28200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">28200000</span><span class="p">,</span> <span class="mi">28800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">28800000</span><span class="p">,</span> <span class="mi">29400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">29400000</span><span class="p">,</span> <span class="mi">30000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">30000000</span><span class="p">,</span> <span class="mi">30600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">30600000</span><span class="p">,</span> <span class="mi">31200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">31200000</span><span class="p">,</span> <span class="mi">31800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">31800000</span><span class="p">,</span> <span class="mi">32400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">32400000</span><span class="p">,</span> <span class="mi">33000000</span><span class="p">,</span> <span class="s1">&#39;yri&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">33000000</span><span class="p">,</span> <span class="mi">33600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">33600000</span><span class="p">,</span> <span class="mi">34200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">34200000</span><span class="p">,</span> <span class="mi">34800000</span><span class="p">,</span> <span class="s1">&#39;yri&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">34800000</span><span class="p">,</span> <span class="mi">35400000</span><span class="p">,</span> <span class="s1">&#39;yri&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">35400000</span><span class="p">,</span> <span class="mi">36000000</span><span class="p">,</span> <span class="s1">&#39;yri&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">36000000</span><span class="p">,</span> <span class="mi">36600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">36600000</span><span class="p">,</span> <span class="mi">37200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">37200000</span><span class="p">,</span> <span class="mi">37800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">37800000</span><span class="p">,</span> <span class="mi">38400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">38400000</span><span class="p">,</span> <span class="mi">39000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">39000000</span><span class="p">,</span> <span class="mi">39600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">39600000</span><span class="p">,</span> <span class="mi">40200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">40200000</span><span class="p">,</span> <span class="mi">40800000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">40800000</span><span class="p">,</span> <span class="mi">41400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">41400000</span><span class="p">,</span> <span class="mi">42000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">42000000</span><span class="p">,</span> <span class="mi">42600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">42600000</span><span class="p">,</span> <span class="mi">43200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">43200000</span><span class="p">,</span> <span class="mi">43800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">43800000</span><span class="p">,</span> <span class="mi">44400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">44400000</span><span class="p">,</span> <span class="mi">45000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">45000000</span><span class="p">,</span> <span class="mi">45600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">45600000</span><span class="p">,</span> <span class="mi">46200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">46200000</span><span class="p">,</span> <span class="mi">46800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">46800000</span><span class="p">,</span> <span class="mi">47400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">47400000</span><span class="p">,</span> <span class="mi">48000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">48000000</span><span class="p">,</span> <span class="mi">48600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">48600000</span><span class="p">,</span> <span class="mi">49200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">49200000</span><span class="p">,</span> <span class="mi">49800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">49800000</span><span class="p">,</span> <span class="mi">50400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">50400000</span><span class="p">,</span> <span class="mi">51000000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">51000000</span><span class="p">,</span> <span class="mi">51600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">51600000</span><span class="p">,</span> <span class="mi">52200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">52200000</span><span class="p">,</span> <span class="mi">52800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">52800000</span><span class="p">,</span> <span class="mi">53400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">53400000</span><span class="p">,</span> <span class="mi">54000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">54000000</span><span class="p">,</span> <span class="mi">54600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">54600000</span><span class="p">,</span> <span class="mi">55200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">55200000</span><span class="p">,</span> <span class="mi">55800000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">55800000</span><span class="p">,</span> <span class="mi">56400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">56400000</span><span class="p">,</span> <span class="mi">57000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">57000000</span><span class="p">,</span> <span class="mi">57600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">57600000</span><span class="p">,</span> <span class="mi">58200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">58200000</span><span class="p">,</span> <span class="mi">58800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">58800000</span><span class="p">,</span> <span class="mi">59400000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">59400000</span><span class="p">,</span> <span class="mi">60000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">60000000</span><span class="p">,</span> <span class="mi">60600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">60600000</span><span class="p">,</span> <span class="mi">61200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">61200000</span><span class="p">,</span> <span class="mi">61800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">61800000</span><span class="p">,</span> <span class="mi">62400000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">62400000</span><span class="p">,</span> <span class="mi">63000000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">63000000</span><span class="p">,</span> <span class="mi">63600000</span><span class="p">,</span> <span class="s1">&#39;ceu&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">63600000</span><span class="p">,</span> <span class="mi">64200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">64200000</span><span class="p">,</span> <span class="mi">64800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">64800000</span><span class="p">,</span> <span class="mi">65400000</span><span class="p">,</span> <span class="s1">&#39;yri&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">65400000</span><span class="p">,</span> <span class="mi">66000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">66000000</span><span class="p">,</span> <span class="mi">66600000</span><span class="p">,</span> <span class="s1">&#39;yri&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">66600000</span><span class="p">,</span> <span class="mi">67200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">67200000</span><span class="p">,</span> <span class="mi">67800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">67800000</span><span class="p">,</span> <span class="mi">68400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">68400000</span><span class="p">,</span> <span class="mi">69000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">69000000</span><span class="p">,</span> <span class="mi">69600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">69600000</span><span class="p">,</span> <span class="mi">70200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">70200000</span><span class="p">,</span> <span class="mi">70800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">70800000</span><span class="p">,</span> <span class="mi">71400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">71400000</span><span class="p">,</span> <span class="mi">72000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">72000000</span><span class="p">,</span> <span class="mi">72600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">72600000</span><span class="p">,</span> <span class="mi">73200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">73200000</span><span class="p">,</span> <span class="mi">73800000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">73800000</span><span class="p">,</span> <span class="mi">74400000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">74400000</span><span class="p">,</span> <span class="mi">75000000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">75000000</span><span class="p">,</span> <span class="mi">75600000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">75600000</span><span class="p">,</span> <span class="mi">76200000</span><span class="p">,</span> <span class="s1">&#39;chbjpt&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">76200000</span><span class="p">,</span> <span class="mi">76800000</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">76800000</span><span class="p">,</span> <span class="mi">77400000</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">77400000</span><span class="p">,</span> <span class="mi">78000000</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;chr18&#39;</span><span class="p">,</span> <span class="mi">78000000</span><span class="p">,</span> <span class="mi">78077248</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>결과로 반환된 리스트를 데이터프레임에 입력한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ideo</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
+<span class="n">ideo</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;chrom&#39;</span><span class="p">,</span><span class="s1">&#39;start&#39;</span><span class="p">,</span><span class="s1">&#39;end&#39;</span><span class="p">,</span><span class="s1">&#39;pop&#39;</span><span class="p">]</span>
+<span class="n">ideo</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ideo</span><span class="o">.</span><span class="n">end</span> <span class="o">-</span> <span class="n">ideo</span><span class="o">.</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>인구집단별 색상값도 추가한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pop_color</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;yri&#39;</span><span class="p">:(</span><span class="mf">0.3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.4</span><span class="p">),</span><span class="s1">&#39;ceu&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.3</span><span class="p">),</span><span class="s2">&quot;chbjpt&quot;</span><span class="p">:(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span><span class="kc">None</span><span class="p">:(</span><span class="mf">0.9</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.9</span><span class="p">)}</span>
+<span class="n">ideo</span><span class="p">[</span><span class="s1">&#39;colors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ideo</span><span class="p">[</span><span class="s1">&#39;pop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pop_color</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ideo</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="n">chrom</span>    <span class="n">start</span>      <span class="n">end</span>     <span class="n">pop</span>   <span class="n">width</span>         <span class="n">colors</span>
+<span class="mi">0</span>  <span class="n">chr18</span>        <span class="mi">0</span>   <span class="mi">600000</span>  <span class="n">chbjpt</span>  <span class="mi">600000</span>  <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="mi">1</span>  <span class="n">chr18</span>   <span class="mi">600000</span>  <span class="mi">1200000</span>  <span class="n">chbjpt</span>  <span class="mi">600000</span>  <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="mi">2</span>  <span class="n">chr18</span>  <span class="mi">1200000</span>  <span class="mi">1800000</span>  <span class="n">chbjpt</span>  <span class="mi">600000</span>  <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="mi">3</span>  <span class="n">chr18</span>  <span class="mi">1800000</span>  <span class="mi">2400000</span>  <span class="n">chbjpt</span>  <span class="mi">600000</span>  <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="mi">4</span>  <span class="n">chr18</span>  <span class="mi">2400000</span>  <span class="mi">3000000</span>  <span class="n">chbjpt</span>  <span class="mi">600000</span>  <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h2>이디오그램 그리기<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<p>해당 데이터를 이디오그램으로 표시한다.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="k">import</span> <span class="n">BrokenBarHCollection</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+
+<span class="k">def</span> <span class="nf">chromosome_collections</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y_positions</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">del_width</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="s1">&#39;width&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">del_width</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;chrom&#39;</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="n">chrom</span>
+        <span class="n">yrange</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_positions</span><span class="p">[</span><span class="n">chrom</span><span class="p">],</span> <span class="n">height</span><span class="p">)</span>
+        <span class="n">xranges</span> <span class="o">=</span> <span class="n">group</span><span class="p">[[</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">yield</span> <span class="n">BrokenBarHCollection</span><span class="p">(</span>
+            <span class="n">xranges</span><span class="p">,</span> <span class="n">yrange</span><span class="p">,</span> <span class="n">facecolors</span><span class="o">=</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;colors&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">del_width</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;adding ideograms...&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">chromosome_collections</span><span class="p">(</span><span class="n">ideo</span><span class="p">,</span> <span class="n">chrom_ybase</span><span class="p">,</span> <span class="n">chrom_height</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+
+<span class="c1"># Height of each ideogram</span>
+<span class="n">chrom_height</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="c1"># Spacing between consecutive ideograms</span>
+<span class="n">chrom_spacing</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="c1"># Height of the gene track. Should be smaller than `chrom_spacing` in order to</span>
+<span class="c1"># fit correctly</span>
+<span class="n">gene_height</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="c1"># Padding between the top of a gene track and its corresponding ideogram</span>
+<span class="n">gene_padding</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="c1"># Width, height (in inches)</span>
+<span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="c1"># Decide which chromosomes to use</span>
+<span class="c1">#chromosome_list = [&#39;chr%s&#39; % i for i in range(1, 23)]</span>
+<span class="n">chromosome_list</span><span class="o">=</span><span class="p">[</span><span class="mi">18</span><span class="p">]</span>
+<span class="c1"># Keep track of the y positions for ideograms and genes for each chromosome,</span>
+<span class="c1"># and the center of each ideogram (which is where we&#39;ll put the ytick labels)</span>
+<span class="n">ybase</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">chrom_ybase</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">gene_ybase</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">chrom_centers</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+
+<span class="c1"># Axes tweaking</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="n">chrom_centers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chromosome_list</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">chromosome_list</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/pic502.png"><img alt="Your ancestry composition chromosome painting" class="align-center" src="_images/pic502.png" style="width: 400px;" /></a>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="nipt.html" class="btn btn-neutral float-right" title="염색체 이상 찾기" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="population.html" class="btn btn-neutral" title="인구 집단 비교" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, hongiiv
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

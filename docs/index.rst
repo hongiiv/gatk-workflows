@@ -28,4 +28,7 @@ Contents
    genome_data
    distance
    population
+   ancestry
    nipt
+   gwas
+

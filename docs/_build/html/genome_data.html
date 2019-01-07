@@ -84,18 +84,18 @@
 <li class="toctree-l2"><a class="reference internal" href="#id2">지노타입 데이터</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id3">지노타입 빈도와 유전자형 빈도</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#heterozygosity">이형접합성(Heterozygosity)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">매핑 데이터</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">유전변이 데이터</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">나쁜 데이터 1 - 유전체 버전 불일치</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">나쁜 데이터 2 - 개행 문자 처리</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id8">나쁜 데이터 3 – 유전체 데이터 좌표계</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id9">나쁜 데이터 4 - 염색체 표기 방법</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id10">유전체 데이터 얻기</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">나쁜 데이터 1 - 유전체 버전 불일치</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">나쁜 데이터 2 - 개행 문자 처리</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">나쁜 데이터 3 – 유전체 데이터 좌표계</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">나쁜 데이터 4 - 염색체 표기 방법</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">유전체 데이터 얻기</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="distance.html">유전적 거리 측정</a></li>
 <li class="toctree-l1"><a class="reference internal" href="population.html">인구 집단 비교</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ancestry.html">조상 정보 찾기</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nipt.html">염색체 이상 찾기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gwas.html">질병 연관성 분석</a></li>
 </ul>
 
             
@@ -164,7 +164,7 @@
 <h1>유전체 데이터<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <p>자신은 누구보다 자신이 잘 안다는 이야기가 있다. 하지만 나 자신을 안다는 것은 여러 면에서 매우 힘든 일이다. MBTI(Myers-Briggs Type Indicator)는 성격유형지표 검사로 자신을 총16가지의 유형으로 판단하는 검사이다. 검사를 해본 사람들은 그동안 자신의 성격에 대해 알려주는 것에 놀라워하기도 한다. &lt;<a class="reference external" href="https://ppss.kr/archives/24889">MBTI 검사는 왜 완전히 무의미한가?</a>&gt;</p>
 <p>자신을 자신답게 만드는 것 중 하나로 DNA를 들 수 있다. 자신의 DNA에는 가깝께는 부모님에 대한 정보뿐 아니라 나아가 조상에 대한 정보, 질병에 대한 감수성, 키나 몸무게 등 복잡한 형질(trait)등 미처 자신이 인지하지 못하고 있었던 다양한 정보를 담고 있다. DNA를 포함한 유전체(genome)는 자신이 태어나서 죽을 때까지 가지는 자신을 나타내고 그 정보를 대를 물려서 전달할 수 있는 데이터라고 할 수 있다.</p>
-<p>지금까지는 유전체 정보는 매우 극소수의 사람들만이 알고 있거나 또는 연구를 위해 정보가 생산되었지만 최근에는 일반 대중들도 DTC(direct-to-consumer) 방식의 유전자검사를 통해 자신이 직접 유전체 정보를 습득할 수 있게 되었다. 해외에서는 이미 수년 전부터 이러한 유전자검사가 대중적으로 가능했지만 국내에서는 이제 막 허용되기 시작했다.</p>
+<p>지금까지는 유전체 정보는 매우 극소수의 사람들만이 알고 있거나 또는 연구를 위해 정보가 생산되었지만 최근에는 일반 대중들도 DTC(direct-to-consumer) 방식의 유전자검사를 통해 자신이 직접 유전체 정보를 습득할 수 있게 되었다. 해외에서는 이미 수년 전부터 이러한 검사가 가능했지만 국내에서는 이제 막 허용되기 시작했다.</p>
 <p>이제 자신을 자신 답게 만들고 또한 대를 물려 전해줄 수 있는 강력한 유전체 정보가 어떠한 의미를 지니고 어떻게 분석할 수 있는지에 대해 알아 보기로 하자.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -201,7 +201,9 @@
 </ul>
 </div>
 <p>이러한 정보를 기반으로 우리는 인간에게 존재하는 유전체 정보를 표현하게 되며 일반적으로 이러한 형태의 데이터를 지노타입 데이터라고 한다. 이러한 지노타입 데이터를 표현하는 방법에는 표준이 존재하지는 않지만, 사실상 표준(De Facto Standard)으로 <a class="reference external" href="https://23andme.com">23andMe</a> 라는 회사의 포맷이 널리 통용된다.</p>
-<p>지노타입 데이터는 다양한 생물학적 방법을 통해 얻을 수 있는데 현재 가장 많이 사용되는 방법이 Genotyping Chip을 이용하는 방법과 NGS(Next-generation Sequencing)를 통해 얻을 수 있다. 첫번째 방법은 특정 영역의 지노타입을 알아내기 위한 방법으로 가장 많이 사용되는 것이 인간유전체 30억개 중 약 90만개 정도를 알아낼 수 있다. 23andMe 역시 <a class="reference external" href="https://www.illumina.com/products/by-type/microarray-kits.html">Illumina라는 회사의 OminiExpress+</a> 라는 Genotpying Chip를 통해 데이터를 생산한다.</p>
+<a class="reference internal image-reference" href="_images/pic102.png"><img alt="23andMe 데이터 포맷" class="align-center" src="_images/pic102.png" style="width: 400px;" /></a>
+<p>지노타입 데이터는 다양한 방법을 통해 얻을 수 있는데 현재 가장 많이 사용되는 방법이 Genotyping Chip을 이용하는 방법과 NGS(Next-generation Sequencing)를 통해 얻을 수 있다. 첫번째 방법은 특정 영역의 지노타입을 알아내기 위한 방법으로 가장 많이 사용되는 것이 인간유전체 30억개 중 약 90만개 정도를 알아낼 수 있다. 23andMe 역시 <a class="reference external" href="https://www.illumina.com/products/by-type/microarray-kits.html">Illumina라는 회사의 OminiExpress+</a> 라는 Genotpying Chip를 통해 데이터를 생산한다.</p>
+<p>두 번째 방법은 NGS를 이용하는 방법으로 인간 유전체를 자르고 약 150bp의 짧은 단편 조각들을 읽는다. 이렇게 얻어진 조각들을 원래 위치를 찾기 위해 매핑이라는 과정을 거치게 되는데 이때 데이터의 양을 coverage라는 이름으로 측정 할 수 있다. 매핑 과정을 거친 데이터는 다시 유전변이를 찾는 과정을 거치게 되며 이때 지노타입 정보 또한 얻을 수 있다.</p>
 </div>
 <div class="section" id="id3">
 <h2>지노타입 빈도와 유전자형 빈도<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
@@ -252,31 +254,21 @@
 <p>대립 유전자의 빈도가 중간(0.5)인 경우 이형접합성은 가장 큰 값인 0.5를 가진다. 일반적으로 이러한 이형접합성이 높은 마커들은 정보력이 큰 마커로서 의미를 가진다. 즉 사람들이 서로 다른 유전형을 가질 수 있기 때문에 이러한 정보력이 큰 마커들을 활용하여 사람을 식별하는데 등에 사용할 수 있다. 즉 서로 다른 유전형이 나올 확률이 많은 마커들을 사용하는 경우에는 동일한 유전형이 나올 확률이 작아지지만 이형접합성이 낮은 마커들은 동일한 유전형이 나올 확률이 많아지기 때문이다.</p>
 </div>
 <div class="section" id="id4">
-<h2>매핑 데이터<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
-<p>두번째 방법은 NGS를 이용하는 방법으로 인간 유전체를 자르고 약 150bp의 짧은 단편 조각들을 읽는다. 이렇게 얻어진 조각들을 원래 위치를 찾기 위해 매핑이라는 과정을 거치게 되는데 이때 데이터의 양을 coverage라는 이름으로 측정 할 수 있다. 매핑 과정을 거친 데이터는 다시 유전변이를 찾는 과정을 거치게 되며 이때 지노타입 정보 또한 얻을 수 있다.</p>
-<p>빨간색 라인이 양쪽에 붙은 선이 인간 유전체의 잘라진 단편 조각으로 NGS를 통해 조각의 앞과 뒤(빨간색 부분)를 각각 150bp 정도 읽게 된다. 이렇게 읽어진 조각을 리드(read)라고 한다. 각각의 리드들은 실제 유전체상의 위치를 찾아가게 되고 각 위치마다 리드가 붙어있는 개수를 해당 위치의 커버리지라고 하며 커버리지는 해당 위치에 얼마나 많은 유전체 데이터가 존재하는지를 알려준다. 이렇게 얻어지 리드들이 A와 G가 존재한다면 지노타입은 AG가 된다.</p>
-<p>리드들이 염색체상에 어느 부분에 매핑 되었는지에 대한 정보는 BAM 포맷이라는 파일 형태로 저장된다.</p>
-</div>
-<div class="section" id="id5">
-<h2>유전변이 데이터<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
-<p>지노타입 정보는 VCF라는 파일의 포맷으로 저장된다. 첫번째 컬럼의 염색체 번호 두번째 컬럼은 위치 4-5번째 컬럼은 나올 수 있는 두개의 allele 정보와 마지막 SAMPLES1 컬럼의 첫번째 부분의 1/0이 지노타입 정보로 1은 첫번째 allele, 2는 두번째 allele로 AG가 된다. 두번재 라인을 보면 C와 G 두개의 allele가 있으며 해당 샘플은 1/1로 GG가 된다. 만약 0/1이라면 CG가된다.</p>
-</div>
-<div class="section" id="id6">
-<h2>나쁜 데이터 1 - 유전체 버전 불일치<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<h2>나쁜 데이터 1 - 유전체 버전 불일치<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>우리는 얼마전 주소 체계가 도로명주소 형식으로 변경되었다. 건물은 그대로 이나 이 건물을 표시하는 방식이 바뀐것이다. 마찬가지로 유전체 데이터도 우리 몸에 존재하는 유전체 데이터는 그대로 이지만 이를 표시하는 방식은 변경이 된다. 현재 널리 사용되는 유전체 데이터의 버전은 GRCh37(Genome Reference Consortium Human genome build 37) 또는 hg19라는 이름으로 2009년부터 사용되고 있다. 가장 최신의 버전은 GRCh38 버전이지만 아직 널리 사용되고 있지는 않다. 2009년 이전에는 버전 36이 사용되고 있어서 현재 공개된 유전체 데이터가 36인지 37인지 확인할 필요가 있다. 대부분의 유전체 데이터는 공개 시 해당 데이터가 어떠한 버전을 사용해서 표기된 데이터인지를 같이 알려준다. 23andMe 데이터도 2012년도 이전까지는 36버전으로 공개되다가 2012년 8월부터는 37버전으로 변경하여 제공하고 있다.</p>
 <p>23andMe의 데이터를 보면 “#”(주석)으로 표시된 부분에 해당 데이터가 37버전으로 작성되어 있음을 표시하고 있다. 현재 rs3094315라는 변이의 위치가 1번 염색체의 752566번째 위치하고 있으나 36버전은 1번 염색체의 742429번째에 위치한다. 이처럼 유전변이를 나타내는 고유의 이름(rs로 시작)은 변하지 않았으나 버전에 따라서 해당 유전변이의 위치 표기법은 다르다.</p>
 </div>
-<div class="section" id="id7">
-<h2>나쁜 데이터 2 - 개행 문자 처리<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>나쁜 데이터 2 - 개행 문자 처리<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <p>여기서 다루는 유전체 데이터는 대부분 리눅스 기반의 환경에서 이루어진다. 따라서 윈도우즈에서 편집한 파일을 리눅스로 불러오는 경우 라인의 끝마다 ^M 이라는 문자열이 보이는 경우가 발생한다. 이는 운영체제 마다 개행문자 처리 방법이 조금씩 다르기 때문이다. 따라서 모든 텍스트 파일은 dos2unix 등의 명령어를 통해 파일 형식을 유닉스 파일형식으로 변경하도록 한다.</p>
 </div>
-<div class="section" id="id8">
-<h2>나쁜 데이터 3 – 유전체 데이터 좌표계<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>나쁜 데이터 3 – 유전체 데이터 좌표계<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>유전체 데이터에서 좌표 (coordiantes)는 기본적으로 0-베이스를 기준으로 한다. 즉 시퀀스의 첫번째 기준 점은 0과 1사이에 존재한다. 기본적으로 0-베이스와 1-베이스의 차이는 아래와 같다. 우리가 4번째에 존재하는 ‘G’는 1-베이스 기반에서의 위치는 1이지만 제로-베이스에서는 3-4가 된다.</p>
 <a class="reference internal image-reference" href="_images/pic101.png"><img alt="유전체 데이터 좌표계" class="align-center" src="_images/pic101.png" style="width: 400px;" /></a>
 </div>
-<div class="section" id="id9">
-<h2>나쁜 데이터 4 - 염색체 표기 방법<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>나쁜 데이터 4 - 염색체 표기 방법<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <p>오라일리에서 출판된 “나쁜 데이터 핸드북”을 보면 “나쁜 데이터는 여러분이 일하는 데 방해가 되는 모든 데이터를 일컫는다.”라는 문구가 나온다. 여기에 가장 잘 맞는 데이터 중 하나가 유전체 데이터가 아닐까 생각한다. 앞에서도 보듯이 우선 유전체 데이터는 버전에 따라서 위치 정보가 각각 다르기 때문에 버전 정보를 확인하는 것이 중요하다. 그뿐만 아니라 또 한가지 주의해야 할 것은 바로 염색체의 표기 방법이다. 인간은 1번부터 22번 염색체와 X, Y 염색체와 미토콘드리아 염색체로 구성되어 있다. 바로 이 염색체를 표기하는 방식이 데이터 마다 상이하다. 표시 방식은 염색체 번호 앞에 ‘chr’이라는 접두사를 붙이는 방식과 붙이지 않는 방식의 크게 2가지 방식이 존재하기 때문에 서로 다른 데이터 세트를 비교하거나 하는 경우에는 주의해서 다루어야 한다.</p>
 <p>방식1</p>
 <div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>1,2,3,4,… 21,22,X,Y,MT
@@ -287,11 +279,17 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="id10">
-<h2>유전체 데이터 얻기<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h2>유전체 데이터 얻기<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
 <p>유전체 데이터를 획득할 수 있는 방법은 다음의 3가지 정도로 정리할 수 있다. 해외의 소비자 직접거래 (DTC, Direct-to-consumer) 방식의 유전자 검사 서비스 업체를 이용하는 방법으로 대표적으로 앞서 언급한 23andMe회사가 존재하며 유전자 검사 결과와 지노타입 데이터를 제공한다.</p>
 <p>두번째 방법은 국내의 소비자 직접거래 방식의 유전자 검사 서비스 업체를 이용하는 방법으로 각 업체마다 고객에게 직접 지노타입 데이터를 제공하는지는 불확실하므로 직접 문의하여 지노타입 데이터 제공이 가능한지 확인해 봐야 한다. 유전자 검사 서비스 업체는 고객의 지노타입 정보와 그에 따른 피노타입 정보를 결합하여 고객에게 유전자 검사결과를 제공하는 것으로 원시데이터(raw data)에 해당하는 지노타입 데이터에 대한 제공 여부는 업체마다 다르다. 국내 소비자 직접거래 방식의 유전자 검사는 23andMe가 약 50만개의 지노타입 데이터를 제공하는 반면 국내는 50여개 내외의 지노타입 정보를 이용한다.</p>
 <p>마지막 방법은 공개된 지노타입 데이터를 이용하는 방법이다. 아직 자신의 유전체 정보가 없는 독자라면 책에서 소개하는 공개된 데이터를 활용하여 데이터를 분석할 수 있다.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>지금까지의 유전자검사는 의료기관을 통해서만 가능했다. 의사의 판단에서 유전자 검사가 필요한 경우 유전자검사기관으로 등록된 기관에서만 가능한 것으로 유전자검사기관은 질병관리본부에 어떠한 유전자검사를 수행하는지에 대한 내용을 제출하고 해당 유전자에 대한 검사만 의료기관의 의뢰를 받아 검사가 가능한 구조였다.</p>
+<p>개정에 따라 2016년 6월부터는 시행되는 생명윤리 및 안전에 관한 법률에 따르면 “비의료기관이 의료기관 의뢰없이 질병예방 목적의 유전자 검사를 보건복지부장관이 정하는 경우 제한적으로 직접 할 수 있도록 허용” 한다고 개정되어 이제부터는 의료기관을 통하지 않고도 유전자검사기관으로 등록된 민간 기관도 소비자를 대상으로 직접 유전자를 검사할 수 있도록 법이 개정되었다.</p>
+<p class="last">다만 모든 유전자에 대한 검사가 가능한 것이 아니라 12개의 검사항목에 42개 유전자에 대해서만 가능하다. 개인이 직접 가능한 검사들은 생활습관 개선과 질병예방 가능한 검사, 과학적 근거가 확보되고 소비자 위해성이 적은 검사로 이루어져 있다.</p>
+</div>
 </div>
 </div>
 

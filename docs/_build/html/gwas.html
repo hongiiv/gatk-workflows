@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>질병 연관성 분석 &mdash; Book  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="염색체 이상 찾기" href="nipt.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Book
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="perface.html">Perface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genome_data.html">유전체 데이터</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distance.html">유전적 거리 측정</a></li>
+<li class="toctree-l1"><a class="reference internal" href="population.html">인구 집단 비교</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ancestry.html">조상 정보 찾기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nipt.html">염색체 이상 찾기</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">질병 연관성 분석</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">오즈비</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">노인성황반변성</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multilocus-risk-estimation">Multilocus risk estimation</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Book</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>질병 연관성 분석</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/gwas.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>질병 연관성 분석<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>A primary application of personal genomics is towards understanding and evaluating the genetic components of personal traits, including risk for various diseases.</p>
+<p>One of the most predominant means for uncovering the relationship between genetics and traits is through genetic association studies, which seek to identify statistical associations between genetic variables and specific human phenotypic traits.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="last docutils">
+<dt>이번 장을 끝마치면 당신은 아래의 3가지에 대해서 배울 수 있다.</dt>
+<dd><ul class="first last simple">
+<li>유전체 연관 분석 연구 방법</li>
+<li>오즈비를 이용한 유전적 위험도 계산</li>
+<li>여러 마커를 이용한 위험도 계산</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="id2">
+<h2>오즈비<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>질병 관련 유전자 발굴을 위해서는 연관성 연구를 통해서 진행된다. 정상인과 질환자의 두 집단간의 특정 변이형의 발생 빈도를 비교하여 통계적으로 차이가 존재하면 특정 변이형과 질병사이에는 유의적으로 연관되어 있음을 의미하게 된다.</p>
+<p>두 집단간의 유의성 검정은 chi-squared(X <sup>2</sup>) test를 사용하며 특정 유전형에 대한 질병의 상대적 위험도는 오즈비(OR: odds ratio)로 표현한다.</p>
+<p>약 100명의 환자와 정상인 데이터에서 유전형을 조사한 결과가 다음과 같다고 하면,</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="24%" />
+<col width="22%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Genotype</th>
+<th class="head">AA</th>
+<th class="head">AB</th>
+<th class="head">BB</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>환자(cases)</td>
+<td>15</td>
+<td>55</td>
+<td>30</td>
+</tr>
+<tr class="row-odd"><td>정상(controls)</td>
+<td>30</td>
+<td>50</td>
+<td>20</td>
+</tr>
+</tbody>
+</table>
+<p>환자와 정상인 그룹별 관측된 유전자형(allele)과 유전형(genotype)은 다음과 같이 계산된다.</p>
+<blockquote>
+<div><ul class="simple">
+<li>환자군에서의 AA 지노타입의 빈도 = 15/100 = 0.15</li>
+<li>환자군에서의 AB 지노타입의 빈도 = 55/100 = 0.55</li>
+<li>환자군에서의 BB 지노타입의 빈도 = 30/100 = 0.3</li>
+<li>환자군에서의 유전자형 A의 빈도 = (2x15+55)/(2x100) = 0.425</li>
+<li>환자군에서의 유전자형 B의 빈도 = (55+2x30)/(2x100) = 0.575</li>
+</ul>
+</div></blockquote>
+<p>따라서 관측된 유전자형(allele)은 유전자형A, B 각각 0.425, 0.575이므로 총 allele는 샘플당 2개 이므로 다음과 같다.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="33%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">allele</th>
+<th class="head">A</th>
+<th class="head">B</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>환자(cases)</td>
+<td>85</td>
+<td>115</td>
+</tr>
+<tr class="row-odd"><td>정상(controls)</td>
+<td>110</td>
+<td>90</td>
+</tr>
+</tbody>
+</table>
+<p>위에서 얻어진 case-control에 대해 상대적 위험도(OR)를 계산하면 다음과 같다.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="33%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">allele</th>
+<th class="head">B</th>
+<th class="head">A</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>환자(cases)</td>
+<td>115</td>
+<td>85</td>
+</tr>
+<tr class="row-odd"><td>정상(controls)</td>
+<td>90</td>
+<td>110</td>
+</tr>
+</tbody>
+</table>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OR</span><span class="o">=</span><span class="p">(</span><span class="mi">115</span><span class="n">x110</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">85</span><span class="n">x90</span><span class="p">)</span> <span class="o">=</span> <span class="mf">1.65</span>
+</pre></div>
+</div>
+<p>즉, 유전자형 B를 가진 사람이 유전자형 A를 가진 사람보다 1.65배 더 빈번히 질병이 발생함을 의미한다.</p>
+</div>
+<div class="section" id="id3">
+<h2>노인성황반변성<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>rs2230199의 C allele는 노화에 따라 황반 기능이 저하되어 시력이 떨어지거나 상실되는 질병인 노인성황반변성(age related macular degeneration)와 연관되어 있다고 알려져 있다. 유럽인에서 1.53의 오즈비를 가지고 있다.</p>
+<p>각 지노타입에 따른 오즈비는 다음과 같다.</p>
+<blockquote>
+<div><ul class="simple">
+<li>CC = 1.53 <sup>2</sup> = 2.34</li>
+<li>CG = 1.53</li>
+<li>GG = 1.0</li>
+</ul>
+</div></blockquote>
+<p>유럽인에서 C allele의 빈도는 19%, G allele의 빈도는 81%로 나타나며 우리는 각 지노타입별 인구집단내에서 빈도를 다음과 같이 계산할 수 있다.</p>
+<blockquote>
+<div><ul class="simple">
+<li>P(CC) = p <sup>2</sup> = 0.192 = 0.23</li>
+<li>P(CG) = 2pq = 2(0.19)(0.81) = 0.31</li>
+<li>P(GG) = q <sup>2</sup> = 0.81 <sup>2</sup> = 0.65</li>
+</ul>
+</div></blockquote>
+<p>인구집단에서의 평균 위험도(estimate the average population risk: R <sub>pop</sub>)를 계산해보도록 하자.</p>
+<blockquote>
+<div><ul class="simple">
+<li>R <sub>pop</sub> = P(CC) ⅹ2.34+P(CG) ⅹ1.53+P(GG) ⅹ1.0 = 0.23ⅹ2.34+0.31x1.53+0.65ⅹ1 = 1.21</li>
+</ul>
+</div></blockquote>
+<p>지노타입에 대한 상대위험도(estimate the genotypic relative risk)를 계산해보도록 하자.</p>
+<blockquote>
+<div><ul class="simple">
+<li>RR(CC) = 2.34 / 1.21 = 1.93</li>
+<li>RR(CG) = 1.53 / 1.21 = 1.26</li>
+<li>RR(GG) = 1.0 / 1.21 = 0.83</li>
+</ul>
+</div></blockquote>
+<p>노인성황반변성이 전체 인구집단에서 평생 동안(average lifetime risk) 6.5%가 발생한다고 하자.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Overall risk = average lifetime risk x RR(CC) = 0.065 x 1.93 = 0.126</li>
+<li>Overall risk = average lifetime risk x RR(CG) = 0.065 x 1.26 = 0.082</li>
+<li>Overall risk = average lifetime risk x RR(GG) = 0.065 x 0.83 = 0.054</li>
+</ul>
+</div></blockquote>
+<p>즉, 15.4% risk of developing age-related macular degneration으로 이를 문장으로 표현하면 당신이 rs2230119의 지노타입이 CC 이면서 유럽인인 경우에 “유럽인 100명중 6.5명이 노인성황반변성에 걸리며, 당신과 같은 유전형(CC)을 가진 유럽인 100명 중 평생에 걸쳐 12.6명이 노인성황반변성에 걸리게 됩니다.”라고 리포트 할 수 있다.</p>
+<a class="reference internal image-reference" href="_images/pic602.png"><img alt="rs2230119의 실제 오즈" class="align-center" src="_images/pic602.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="multilocus-risk-estimation">
+<h2>Multilocus risk estimation<a class="headerlink" href="#multilocus-risk-estimation" title="Permalink to this headline">¶</a></h2>
+<p>노인성황반변성과 관련된 마커가 다음의 4개이며 각각의 상대위험도가 다음과 같다면, 최종적인 lifetime risk of AMD는 다음과 같다.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="31%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">SNP</th>
+<th class="head">Genotype</th>
+<th class="head">Relative Risk</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>rs1061147</td>
+<td>AC</td>
+<td>0.97</td>
+</tr>
+<tr class="row-odd"><td>rs547154</td>
+<td>GG</td>
+<td>1.07</td>
+</tr>
+<tr class="row-even"><td>rs3750847</td>
+<td>CC</td>
+<td>0.47</td>
+</tr>
+<tr class="row-odd"><td>rs2230199</td>
+<td>GG</td>
+<td>0.79</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><ul class="simple">
+<li>0.065 x 0.97 x 1.07 x 0.47 x 0.79 = 0.025 즉 2.5% lifetime risk of AMD가 된다.</li>
+</ul>
+</div></blockquote>
+<a class="reference internal image-reference" href="_images/pic601.png"><img alt="23andMe 노인성황반변성 위험도" class="align-center" src="_images/pic601.png" style="width: 400px;" /></a>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="nipt.html" class="btn btn-neutral" title="염색체 이상 찾기" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, hongiiv
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
